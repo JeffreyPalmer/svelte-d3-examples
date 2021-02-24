@@ -1,62 +1,32 @@
 <script lang="typescript">
-	import { onMount } from "svelte";
-
-	let count: number = 0;
-	onMount(() => {
-		const interval = setInterval(() => count++, 1000);
-		return () => {
-			clearInterval(interval);
-		};
-	});
+	import D3Base from "./components/D3Base.svelte";
+	import Felton2013BarChart from "./components/Felton2013BarChart.svelte";
+	import Felton2013Histogram from "./components/Felton2013Histogram.svelte";
+	import Felton2013HistogramPart2 from "./components/Felton2013HistogramPart2.svelte";
 </script>
 
 <style>
-	:global(body) {
-		margin: 0;
-		font-family: Arial, Helvetica, sans-serif;
-	}
-	div code {
-		background: #0002;
-		padding: 4px 8px;
-		border-radius: 4px;
-	}
-	div p {
-		margin: 0.4rem;
-	}
-
-	div header {
-		background-color: #f9f6f6;
-		color: #333;
-		min-height: 100vh;
-		font-size: calc(10px + 2vmin);
-	}
-	div a {
-		color: #ff3e00;
-	}
-	div img {
-		height: 36vmin;
-		margin-bottom: 3rem;
-		animation: App-logo-spin infinite 1.6s ease-in-out alternate;
-	}
-	@keyframes App-logo-spin {
-		from {
-			transform: scale(1);
-		}
-		to {
-			transform: scale(1.06);
-		}
+	:global(svg) {
+		color: #ccc;
+		stroke: #ccc;
+		fill: #ccc;
 	}
 </style>
 
-<div class="text-center">
-	<header class="flex flex-col items-center justify-center">
-		<img src="/logo.svg" alt="logo" class="pointer-events-none" />
-		<p>Edit <code>src/App.svelte</code> and save to reload.</p>
-		<p>Page has been open for <code>{count}</code> seconds.</p>
-		<p>
-			<a href="https://svelte.dev" target="_blank" rel="noopener noreferrer">
-				Learn Svelte
-			</a>
-		</p>
-	</header>
+<div class="m-8">
+	<p class="text-center font-bold text-3xl my-8">D3 / Svelte Examples</p>
+	<div class="grid grid-cols-2 gap-10">
+		<div class="bg-gray-700">
+			<D3Base />
+		</div>
+		<div class=" bg-gray-700">
+			<Felton2013BarChart />
+		</div>
+		<div class=" bg-gray-700">
+			<Felton2013Histogram />
+		</div>
+		<div class=" bg-gray-700">
+			<Felton2013HistogramPart2 />
+		</div>
+	</div>
 </div>
