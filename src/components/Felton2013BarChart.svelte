@@ -69,11 +69,16 @@
     const metricAccessor = (d) => d.total_actions;
     const titleAccessor = (d) => d.name;
 
+    // Grab the maximum value from the data for later use
     const xMax = d3.max(data, metricAccessor);
     const xScale = d3
         .scaleLinear()
         .domain([0, xMax])
         .range([margins.left, width - margins.right]);
+
+    // Calculate the index-based offset from the top of the SVG
+    // Note: Add textHeight to shift text below the starting point
+    //       as text is placed according the the baseline
     const yOffsetFn = (i) => lineHeight * i + margins.top + textHeight;
 
     const diff = (a, b) => metricAccessor(b) - metricAccessor(a);
