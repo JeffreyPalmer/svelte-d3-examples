@@ -74,7 +74,7 @@
         left: 50,
         right: 50,
     };
-    // We know we're showing 12 months so divide into 24 intevals
+    // We know we're showing 12 months so divide into 24 intervals
     // TODO: generalize
     $: labelXOffset = (width - margins.left - margins.right) / 24;
     // $: console.log("X-OFFSET", labelXOffset);
@@ -110,18 +110,12 @@
         return date.toLocaleString("en-us", options);
     }
 
-    function generateFeltonLine(
-        data: any,
-        xScale: any,
-        xAccessor: any,
-        yScale: any,
-        yAccessor: any
-    ) {
+    function generateFeltonLine(data, xScale, xAccessor, yScale, yAccessor) {
         // this is only correct because of 0-based arrays and # segments = # points - 1
         const segments = data.length;
         const segmentWidth =
             xScale(xAccessor(data[1])) - xScale(xAccessor(data[0]));
-        const connectorWidth = segmentWidth / 20; // 5% on each side
+        const connectorWidth = segmentWidth * 0.05; // 5% on each side
 
         // start with the first point, as it (and the last point) are special cases
         let result = [[xScale(xAccessor(data[0])), yScale(yAccessor(data[0]))]];
