@@ -171,10 +171,21 @@
 </script>
 
 <style>
+    .title {
+        font-size: var(--label-size);
+        /* font-weight: bold; */
+        color: var(--normal-color);
+    }
     .label {
         font-size: var(--label-size);
         /* font-weight: bold; */
         text-anchor: middle;
+        color: var(--normal-color);
+    }
+    .scale-label {
+        font-size: var(--label-size);
+        /* font-weight: bold; */
+        text-anchor: end;
         color: var(--normal-color);
     }
     svg {
@@ -197,6 +208,14 @@
     class="border border-gray-500 w-full h-auto"
     viewBox="0 0 {width} {height}"
 >
+    <text class="title" x={margins.left} y={margins.top + textHeight}
+        >TOTAL MONTHLY MEASUREMENT</text
+    >
+    <text
+        class="scale-label"
+        x={width - margins.right}
+        y={margins.top + textHeight}>&times;{formatter(scale)}</text
+    >
     <path class="line" d={yLine} />
     {#each data as datum}
         <text
