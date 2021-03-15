@@ -200,7 +200,11 @@
 
     // generate points covering the entire bottom of the SVG
     // they'll be filtered later
-    $: points = generatePoissonPoints(width, height / 2 - margins.bottom, 10);
+    $: points = generatePoissonPoints(
+        width,
+        (height - margins.top - margins.bottom) / 2,
+        10
+    );
     $: closedPoly = generateClosedFeltonPolygon(
         augmentedData,
         xScale,
