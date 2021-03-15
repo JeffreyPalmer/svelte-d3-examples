@@ -105,18 +105,25 @@ export function generateFeltonLine(data: any, xScale: any, xAccessor: any, yScal
     return result
 }
 
-export function generateClosedFeltonPolygon(data:any, xScale:any, xAccessor:any, yScale:any, yAccessor:any) {
+export function generateClosedFeltonPolygon(data: any, xScale: any, xAccessor: any, yScale: any, yAccessor: any) {
     const lineSegments = generateFeltonLine(
         data,
         xScale,
         xAccessor,
         yScale,
         yAccessor
-    );
+    )
     return [
-        [xScale(xAccessor(data[0])), yScale(0)],
-        ...lineSegments,
-        [xScale(xAccessor(data[data.length - 1])), yScale(0)],
+        // First point - on the origin
         [xScale(0), yScale(0)],
-    ];
+
+        // Now the generated points for the measure lines
+        ...lineSegments,
+
+        // Bring the line back to the x-axis
+        [xScale(xAccessor(data[data.length - 1])), yScale(0)],
+
+        // Now close the polygon by going back to the origin
+        [xScale(0), yScale(0)],
+    ]
 }

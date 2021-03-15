@@ -76,7 +76,7 @@
     const myClonedData = R.clone(data[11]);
     // Now set the date to one month after
     myClonedData.month = "2021-01-01";
-    const myData = [...R.clone(data), myClonedData];
+    const augmentedData = [...R.clone(data), myClonedData];
 
     export let width: int = 1200;
     export let height: int = 800;
@@ -109,23 +109,24 @@
         .domain([dateParser("2020-01-01"), dateParser("2021-01-01")])
         .range([margins.left, width - margins.right]);
 
-    // Mention that you need to reverse the top and bottom in the range
-    // Add a little buffer to the top of the range
+    // The top scale goes from midpoint to top margin
+    // Add 10% of the max top value to the end of the domain
+    // to ensure there is headroom on the chart
     $: topScale = d3
         .scaleLinear()
-        .domain([0, d3.max(data, topAccessor) + d3.max(data, topAccessor) / 10])
+        .domain([0, d3.max(data, topAccessor) * 1.1])
         .range([
             (height - margins.bottom - margins.top) / 2 + margins.top,
             margins.top,
         ])
         .nice();
 
+    // The bottom scale goes from midpoint to bottom margin
+    // Add 10% of the max bottom value to the end of the domain
+    // to ensure there is footroom (?) on the chart
     $: bottomScale = d3
         .scaleLinear()
-        .domain([
-            0,
-            d3.max(data, bottomAccessor) + d3.max(data, bottomAccessor) / 10,
-        ])
+        .domain([0, d3.max(data, bottomAccessor) * 1.1])
         .range([
             (height - margins.bottom - margins.top) / 2 + margins.top,
             height - margins.bottom,
@@ -148,20 +149,23 @@
 
     // Second attempt - Felton-style connectors
     $: topLine = d3.line()(
-        generateFeltonLine(myData, xScale, xAccessor, topScale, topAccessor)
+        generateFeltonLine(
+            augmentedData,
+            xScale,
+            xAccessor,
+            topScale,
+            topAccessor
+        )
     );
-    // $: console.log("FELTON LINE:", topLine);
-
     $: bottomLine = d3.line()(
         generateFeltonLine(
-            myData,
+            augmentedData,
             xScale,
             xAccessor,
             bottomScale,
             bottomAccessor
         )
     );
-    $: console.log("FELTON LINE:", topLine);
 
     // For binding in the markup below
     let xAxis;
@@ -181,6 +185,8 @@
         d3.select(xAxis).call(xAxisGenerator).select(".domain").remove();
     }
 
+    // Use the generator to generate all of the points
+    // so that they can be iterated over by svelte
     function generatePoissonPoints(width, height, radius) {
         const sampler = poissonDiscSampler(width, height, radius);
         let points = [];
@@ -192,9 +198,11 @@
         return points;
     }
 
+    // generate points covering the entire bottom of the SVG
+    // they'll be filtered later
     $: points = generatePoissonPoints(width, height / 2 - margins.bottom, 10);
     $: closedPoly = generateClosedFeltonPolygon(
-        myData,
+        augmentedData,
         xScale,
         xAccessor,
         bottomScale,
@@ -208,22 +216,20 @@
         stroke: var(--normal-color);
     }
 
-    .align-right {
-        text-anchor: end;
-    }
-
     .top-label {
         font-size: var(--label-size);
-        color: var(--highlight-color);
+        fill: var(--highlight-color);
+        stroke: var(--highlight-color);
     }
 
     .bottom-label {
         font-size: var(--label-size);
+        fill: var(--normal-color);
+        stroke: var(--norman-color);
     }
 
     .label {
         font-size: var(--label-size);
-        /* font-weight: bold; */
         text-anchor: middle;
         color: var(--normal-color);
     }
@@ -250,7 +256,7 @@
 </style>
 
 <p class="text-center text-lg text-gray-700 bg-white">
-    Felton 2013 Histogram - Part 2
+    Felton 2013 Histogram - Variant 2
 </p>
 <svg
     style="--label-size: {textHeight}px; --highlight-color: {highlightColor}; --normal-color: {normalColor};"
@@ -319,16 +325,18 @@
         y2={(height - margins.top - margins.bottom) / 2 + margins.top}
     />
     <text
-        class="align-right top-label"
-        alignment-baseline="baseline"
+        class="top-label"
+        filter="url(#outline)"
+        text-anchor="end"
         x={width - margins.right}
         y={(height - margins.top - margins.bottom) / 2 +
             margins.top -
             textHeight / 2}>Top</text
     >
     <text
-        class="align-right bottom-label"
+        class="bottom-label"
         filter="url(#outline)"
+        text-anchor="end"
         x={width - margins.right}
         y={(height - margins.top - margins.bottom) / 2 +
             margins.top +

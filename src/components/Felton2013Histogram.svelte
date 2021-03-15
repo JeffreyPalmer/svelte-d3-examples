@@ -59,7 +59,7 @@
     const myClonedData = R.clone(data[11]);
     // Now set the date to one month after
     myClonedData.month = "2021-01-01";
-    const myData = [...R.clone(data), myClonedData];
+    const augmentedData = [...R.clone(data), myClonedData];
 
     export let width: int = 1200;
     export let height: int = 800;
@@ -147,7 +147,7 @@
 
     // Second attempt - Felton-style connectors
     $: yLine = d3.line()(
-        generateFeltonLine(myData, xScale, xAccessor, yScale, yAccessor)
+        generateFeltonLine(augmentedData, xScale, xAccessor, yScale, yAccessor)
     );
     // $: console.log("FELTON LINE:", yLine);
 
@@ -201,7 +201,7 @@
 </style>
 
 <p class="text-center text-lg text-gray-700 bg-white">
-    Felton 2013 Histogram - Part 1
+    Felton 2013 Histogram - Variant 1
 </p>
 <svg
     style="--label-size: {textHeight}px; --highlight-color: {highlightColor}; --normal-color: {normalColor};"
