@@ -41,7 +41,7 @@
     }
 </script>
 
-<div style="--highlight-color: {highlightColor}; --normal-color: {normalColor}">
+<div style="--highlight-color: {highlightColor}">
     <p class="text-center text-lg text-gray-700 bg-white">
         Felton 2013 Volume Chart
     </p>

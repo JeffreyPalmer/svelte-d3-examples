@@ -110,13 +110,11 @@
         fill: none;
     }
     .axis {
-        fill: var(--normal-color);
         stroke: none;
         font-size: 12px;
         text-anchor: middle;
     }
     .dashed-line {
-        stroke: var(--normal-color);
         stroke-dasharray: 1px 3px;
         stroke-width: 1px;
     }

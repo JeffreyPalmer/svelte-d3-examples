@@ -59,8 +59,6 @@
 
 <style>
     circle {
-        fill: var(--normal-color);
-        stroke: var(--normal-color);
         opacity: 0.5;
     }
     .highlight {
@@ -70,12 +68,10 @@
     }
     .title {
         stroke: none;
-        fill: var(--normal-color);
         font-size: 12px;
     }
     .time-label {
         stroke: none;
-        fill: var(--normal-color);
         font-size: 12px;
         text-anchor: end;
     }
