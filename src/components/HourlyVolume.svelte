@@ -5,14 +5,14 @@
 
     export let title;
     export let width;
-    const ratio = 4 / 1;
+    const ratio = 5 / 1;
     $: height = width / ratio;
 
     const topPadding = 25;
     const bottomPadding = 10;
 
     // point sizing control
-    const maxRadius = 3;
+    const maxRadius = 2.5;
     const boundPercentile = 0.99;
 
     export let data;
@@ -57,10 +57,10 @@
 <style>
     circle {
         opacity: 0.5;
+        stroke: none;
     }
     .highlight {
         fill: var(--highlight-color);
-        stroke: var(--highlight-color);
         opacity: 1;
     }
     .title {
