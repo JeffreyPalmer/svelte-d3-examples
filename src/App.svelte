@@ -3,6 +3,7 @@
 	import Felton2013BarChart from "./components/Felton2013BarChart.svelte";
 	import Felton2013Histogram from "./components/Felton2013Histogram.svelte";
 	import Felton2013HistogramPart2 from "./components/Felton2013HistogramPart2.svelte";
+	import Felton2013VolumeChart from "./components/Felton2013VolumeChart.svelte";
 </script>
 
 <style>
@@ -19,14 +20,17 @@
 		<div class="bg-gray-700">
 			<D3Base />
 		</div>
-		<div class=" bg-gray-700">
+		<div class="bg-gray-700">
 			<Felton2013BarChart />
 		</div>
-		<div class=" bg-gray-700">
+		<div class="bg-gray-700">
 			<Felton2013Histogram />
 		</div>
-		<div class=" bg-gray-700">
+		<div class="bg-gray-700">
 			<Felton2013HistogramPart2 />
+		</div>
+		<div class="bg-gray-700 col-span-2">
+			<Felton2013VolumeChart />
 		</div>
 	</div>
 </div>

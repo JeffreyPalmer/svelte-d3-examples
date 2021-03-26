@@ -82,7 +82,7 @@ export function generateFeltonLine(data: any, xScale: any, xAccessor: any, yScal
     const segments = data.length
     const segmentWidth =
         xScale(xAccessor(data[1])) - xScale(xAccessor(data[0]))
-    const connectorWidth = segmentWidth / 20 // 5% on each side
+    const connectorWidth = segmentWidth * 0.05 // 5% on each side
 
     // start with the first point, as it (and the last point) are special cases
     let result = [[xScale(xAccessor(data[0])), yScale(yAccessor(data[0]))]]
