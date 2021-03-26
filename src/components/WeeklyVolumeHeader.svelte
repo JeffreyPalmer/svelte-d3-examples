@@ -28,16 +28,11 @@
         .rollup({ total: (d) => aq.op.sum(d.count) })
         .orderby("week")
         .objects();
-    // $: console.log("WEEKLY TOTALS:", weeklyTotals.slice(0, 9));
 
     $: augmentedWeeklyTotals = [
         ...weeklyTotals,
         createNewLastElement(weeklyTotals),
     ];
-    // $: console.log(
-    //     "AUGMENTED WEEKLY TOTALS:",
-    //     augmentedWeeklyTotals.slice(0, 5)
-    // );
 
     const xAccessor = (d) => d.week;
     const yAccessor = (d) => d.total;
@@ -70,7 +65,6 @@
         weeklyTotals[0].week,
         weeklyTotals[weeklyTotals.length - 1].week
     );
-    // $: console.log("MONTHS", months);
     $: midMonths = months.map((d) => d3.timeDay.offset(d, 15));
 
     let xAxis;

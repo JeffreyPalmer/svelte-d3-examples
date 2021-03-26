@@ -21,9 +21,7 @@
     const sizeAccessor = (d) => d.count;
 
     $: weeks = data.filter((d) => yAccessor(d) == 0);
-    // $: console.log("WEEKS", weeks);
     $: sidePadding = width / weeks.length / 2;
-    $: console.log("SIDE PADDING", sidePadding);
 
     $: xScale = d3
         .scaleTime()
@@ -35,10 +33,9 @@
         .domain([0, 23])
         .range([topPadding, height - bottomPadding]);
 
-    // find the an upper limit for the radius scale based on boundPercentile
+    // find an upper limit for the radius scale based on boundPercentile
     // this allows us to use .clamp(true) to keep outliers from overwhelming the visual
     $: sizeLimit = d3.quantile(data, boundPercentile, sizeAccessor);
-    $: console.log("SIZE LIMIT: ", sizeLimit);
 
     $: radiusScale = d3
         .scaleSqrt()

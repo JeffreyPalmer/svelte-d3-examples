@@ -15,7 +15,6 @@
         const rawData = await d3.json(
             "/data/volume-weekly-activity-by-hour.json"
         );
-        // console.log("RAW DATA:", rawData);
         aq.addFunction("d3_parse_date", d3.timeParse("%Y-%m-%d"), {
             override: true,
         });
@@ -29,13 +28,6 @@
                 week: (d) => aq.op.d3_parse_date(d.week),
             })
             .select(["count", "event", "hour", "week"]);
-        console.log(
-            "AQ",
-            allData
-                .filter((d) => d.event === "pull_requests")
-                .slice(0, 10)
-                .objects()
-        );
 
         return allData;
     }
