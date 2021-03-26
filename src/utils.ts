@@ -115,7 +115,7 @@ export function generateClosedFeltonPolygon(data: any, xScale: any, xAccessor: a
     )
     return [
         // First point - on the origin
-        [xScale(0), yScale(0)],
+        [xScale(xAccessor(data[0])), yScale(0)],
 
         // Now the generated points for the measure lines
         ...lineSegments,
@@ -124,6 +124,6 @@ export function generateClosedFeltonPolygon(data: any, xScale: any, xAccessor: a
         [xScale(xAccessor(data[data.length - 1])), yScale(0)],
 
         // Now close the polygon by going back to the origin
-        [xScale(0), yScale(0)],
+        [xScale(xAccessor(data[0])), yScale(0)],
     ]
 }
