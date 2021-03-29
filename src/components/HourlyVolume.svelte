@@ -15,6 +15,9 @@
     const maxRadius = 2.5;
     const boundPercentile = 0.99;
 
+    export let highlightColor;
+    export let normalColor;
+
     export let data;
     const xAccessor = (d) => d.week;
     const yAccessor = (d) => d.hour;
@@ -49,19 +52,16 @@
     }
 
     $: p80 = d3.quantile(data, 0.8, sizeAccessor);
-    function isHighlight(hour) {
-        return sizeAccessor(hour) > p80;
-    }
+    $: colorScale = d3
+        .scaleThreshold()
+        .domain([p80])
+        .range([normalColor, highlightColor]);
+    $: opacityScale = d3.scaleThreshold().domain([p80]).range([0.5, 1.0]);
 </script>
 
 <style>
     circle {
-        opacity: 0.5;
         stroke: none;
-    }
-    .highlight {
-        fill: var(--highlight-color);
-        opacity: 1;
     }
     .title {
         stroke: none;
@@ -78,10 +78,11 @@
     {#each weeks as week}
         {#each getHoursForWeek(data, xAccessor(week)) as hour}
             <circle
-                class:highlight={isHighlight(hour)}
                 cx={xScale(xAccessor(hour))}
                 cy={yScale(yAccessor(hour))}
                 r={radiusScale(sizeAccessor(hour))}
+                fill={colorScale(sizeAccessor(hour))}
+                opacity={opacityScale(sizeAccessor(hour))}
             />
         {/each}
     {/each}

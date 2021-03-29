@@ -43,16 +43,22 @@
             <HourlyVolume
                 data={data.filter((d) => d.event === "pull_requests").objects()}
                 {width}
+                {highlightColor}
+                {normalColor}
                 title="PULL REQUESTS"
             />
             <HourlyVolume
                 data={data.filter((d) => d.event === "issues").objects()}
                 {width}
+                {highlightColor}
+                {normalColor}
                 title="ISSUES"
             />
             <HourlyVolume
                 data={data.filter((d) => d.event === "branches").objects()}
                 {width}
+                {highlightColor}
+                {normalColor}
                 title="BRANCHES"
             />
         {/await}
