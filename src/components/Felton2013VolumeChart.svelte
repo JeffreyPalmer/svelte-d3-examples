@@ -21,13 +21,12 @@
         const allData = aq
             .from(rawData.data)
             .fold(["pull_requests", "issues", "branches"], {
-                as: ["event", "countStr"],
+                as: ["event", "count"],
             })
             .derive({
-                count: (d) => aq.op.parse_int(d.countStr),
+                count: (d) => aq.op.parse_int(d.count),
                 week: (d) => aq.op.d3_parse_date(d.week),
-            })
-            .select(["count", "event", "hour", "week"]);
+            });
 
         return allData;
     }
