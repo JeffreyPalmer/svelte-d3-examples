@@ -80,11 +80,12 @@
     }
 
     const dateFinder = d3.bisector(xAccessor);
-    function findCountAtDate(data, date) {
+    function findHeightAtDate(data, date) {
         const index = dateFinder.left(data, date) - 1;
 
         // if the current date is a sunday (the start of the week) we'll
-        // have some issues with the Felton line transitions, so work around that
+        // have some issues with the Felton line transitions, so work around
+        // that by averaging neighboring measure heights
         if (date.getDay() === 0) {
             return (
                 (yScale(yAccessor(data[index])) +
@@ -121,7 +122,7 @@
             x1={xScale(month)}
             x2={xScale(month)}
             y1={yScale(0)}
-            y2={findCountAtDate(weeklyTotals, month)}
+            y2={findHeightAtDate(weeklyTotals, month)}
         />
     {/each}
     <path class="total" d={yLine} />
