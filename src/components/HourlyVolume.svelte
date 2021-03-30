@@ -47,7 +47,10 @@
         .clamp(true);
 
     function getHoursForWeek(data, week) {
-        const result = d3.filter(data, (d) => +xAccessor(d) === +week);
+        const result = d3.filter(
+            data,
+            (d) => xAccessor(d)?.valueOf() === week.valueOf()
+        );
         return result;
     }
 
