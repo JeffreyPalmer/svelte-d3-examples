@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import * as d3 from "d3";
     import * as R from "ramda";
 
@@ -45,7 +45,7 @@
         },
     ];
 
-    const width: int = 1200;
+    const width = 1200;
 
     const margins = {
         top: 50,

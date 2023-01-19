@@ -1,34 +1,38 @@
-# Example D3/Svelte Visualizations
-These are a set of D3 visualization sketches made to supplement my [blog posts on the topic](https://jpalmer.dev/blog).
+# create-svelte
 
-This repository was created from this [Svelte/Snowpack/TypeScript/Tailwind starter](https://github.com/GarrettCannon/snowpack-svelte-ts-tw).
+Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
-# Svelte with Typescript and TailwindCSS built with Snowpack
+## Creating a project
 
-> ✨ Community template for Snowpack + Svelte + Typescript + TailwindCSS
-
-Create a new project with:
+If you're seeing this, you've probably already done this step. Congrats!
 
 ```bash
-npx create-snowpack-app dir-name --template snowpack-svelte-ts-tw
+# create a new project in the current directory
+npm create svelte@latest
+
+# create a new project in my-app
+npm create svelte@latest my-app
 ```
 
-Uses `svelte-preprocess`
+## Developing
 
-## Available Scripts
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-### npm start
+```bash
+npm run dev
 
-Runs the app in the development mode.
-Open http://localhost:8080 to view it in the browser.
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
 
-The page will reload if you make edits.
-You will also see any lint errors in the console.
+## Building
 
-### npm run build
+To create a production version of your app:
 
-Builds a static copy of your site to the `build/` folder.
-Your app is ready to be deployed!
+```bash
+npm run build
+```
 
-**For the best production performance:** Add a build bundler plugin like "@snowpack/plugin-webpack" or "@snowpack/plugin-parcel" to your `snowpack.config.json` config file.
+You can preview the production build with `npm run preview`.
 
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
