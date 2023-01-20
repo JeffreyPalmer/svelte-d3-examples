@@ -44,28 +44,28 @@
         class="label"
         x={0}
         y={height}
-        alignment-baseline="baseline"
+        dominant-baseline="auto"
         text-anchor="start">[0, {height}]</text
     >
     <text
         class="label"
         x={width}
         y={height}
-        alignment-baseline="baseline"
-        text-anchor="end">[{width}, {height}]</text
+        dominant-baseline="auto"
+        text-anchor="end">[{height}, 0]</text
     >
     <text
         class="label"
         x={0}
         y={textHeight}
-        alignment-baseline="text-top"
+        dominant-baseline="auto"
         text-anchor="start">[0, 0]</text
     >
     <text
         class="label"
         x={width}
         y={textHeight}
-        alignment-baseline="text-top"
+        dominant-baseline="auto"
         text-anchor="end">[{width}, 0]</text
     >
     <polygon
@@ -89,6 +89,6 @@
         x={xScale(100)}
         y={yScale(100)}
         text-anchor="end"
-        alignment-baseline="bottom">(100,100)</text
+        dominant-baseline="bottom">(100,100)</text
     >
 </svg>
