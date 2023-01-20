@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
     import * as d3 from "d3";
 
-    export let width: int = 1200;
-    export let height: int = 800;
+    export let width = 1200;
+    export let height = 800;
 
     let textHeight = 30;
     let highlightColor = "cornflowerblue";

@@ -1,9 +1,11 @@
-<script>
+<script lang="ts">
     import * as d3 from "d3";
     import * as aq from "arquero";
 
     import WeeklyVolumeHeader from "./WeeklyVolumeHeader.svelte";
     import HourlyVolume from "./HourlyVolume.svelte";
+
+    import json from "$lib/data/volume-weekly-activity-by-hour.json"
 
     export let width = 1200;
     // export let height = 800;
@@ -12,9 +14,7 @@
     const normalColor = "#ccc";
 
     async function loadData() {
-        const rawData = await d3.json(
-            "/data/volume-weekly-activity-by-hour.json"
-        );
+        const rawData = json
         aq.addFunction("d3_parse_date", d3.timeParse("%Y-%m-%d"), {
             override: true,
         });

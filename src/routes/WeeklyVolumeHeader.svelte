@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import * as d3 from "d3";
     import * as aq from "arquero";
-    import { generateFeltonLine } from "../utils";
+    import { generateFeltonLine } from "$lib/utils";
 
-    export let width;
+    export let width: number;
     // TODO: What's the right ratio for this component?
     const ratio = 10 / 1;
     $: height = width / ratio;

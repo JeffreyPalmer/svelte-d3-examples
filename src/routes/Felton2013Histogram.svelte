@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import * as d3 from "d3";
     import * as R from "ramda";
 
@@ -61,8 +61,8 @@
     myClonedData.month = "2021-01-01";
     const augmentedData = [...R.clone(data), myClonedData];
 
-    export let width: int = 1200;
-    export let height: int = 800;
+    export let width = 1200;
+    export let height= 800;
 
     const textHeight = 30;
     const highlightColor = "cornflowerblue";
@@ -112,7 +112,7 @@
 
     function generateFeltonLine(data, xScale, xAccessor, yScale, yAccessor) {
         // this is only correct because of 0-based arrays and # segments = # points - 1
-        const segments = data.length;
+        /* const segments = data.length; */
         const segmentWidth =
             xScale(xAccessor(data[1])) - xScale(xAccessor(data[0]));
         const connectorWidth = segmentWidth * 0.05; // 5% on each side

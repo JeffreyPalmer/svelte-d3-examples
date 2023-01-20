@@ -1,9 +1,9 @@
-<script lang="typescript">
-	import D3Base from "./components/D3Base.svelte";
-	import Felton2013BarChart from "./components/Felton2013BarChart.svelte";
-	import Felton2013Histogram from "./components/Felton2013Histogram.svelte";
-	import Felton2013HistogramPart2 from "./components/Felton2013HistogramPart2.svelte";
-	import Felton2013VolumeChart from "./components/Felton2013VolumeChart.svelte";
+<script lang="ts">
+	import D3Base from "./D3Base.svelte";
+	import Felton2013BarChart from "./Felton2013BarChart.svelte";
+	import Felton2013Histogram from "./Felton2013Histogram.svelte";
+	import Felton2013HistogramPart2 from "./Felton2013HistogramPart2.svelte";
+	import Felton2013VolumeChart from "./Felton2013VolumeChart.svelte";
 </script>
 
 <style>

@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
     import * as d3 from "d3";
     import * as R from "ramda";
     import {
         poissonDiscSampler,
         generateFeltonLine,
         generateClosedFeltonPolygon,
-    } from "../utils.ts";
+    } from "$lib/utils";
 
     export let data = [
         {
@@ -78,8 +78,8 @@
     myClonedData.month = "2021-01-01";
     const augmentedData = [...R.clone(data), myClonedData];
 
-    export let width: int = 1200;
-    export let height: int = 800;
+    export let width= 1200;
+    export let height= 800;
 
     const textHeight = 30;
     const highlightColor = "cornflowerblue";
@@ -96,9 +96,9 @@
     $: labelXOffset = (width - margins.left - margins.right) / 24;
     $: console.log("X-OFFSET", labelXOffset);
 
-    const labelYOffset = 15;
+    /* const labelYOffset = 15; */
 
-    const formatter = d3.format(".0f");
+    /* const formatter = d3.format(".0f"); */
     const dateParser = d3.timeParse("%Y-%m-%d");
     const xAccessor = (d) => dateParser(d.month);
     const topAccessor = (d) => d.top_total;
@@ -190,7 +190,7 @@
     function generatePoissonPoints(width, height, radius) {
         const sampler = poissonDiscSampler(width, height, radius);
         let points = [];
-        let a: [float, float] = sampler();
+        let a: [number, number] = sampler();
         while (a) {
             points.push(a);
             a = sampler();
