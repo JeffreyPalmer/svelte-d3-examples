@@ -14,9 +14,7 @@
     const normalColor = "#ccc";
 
     async function loadData() {
-        const rawData = await d3.json(
-            json
-        );
+        const rawData = json
         aq.addFunction("d3_parse_date", d3.timeParse("%Y-%m-%d"), {
             override: true,
         });
