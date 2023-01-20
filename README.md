@@ -1,3 +1,6 @@
+# Example D3/Svelte Visualizations
+These are a set of D3 visualization sketches made to supplement my [blog posts on the topic](https://jpalmer.dev/series/vs-code-2020-year-in-review/).
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
