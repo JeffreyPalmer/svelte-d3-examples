@@ -1,6 +1,5 @@
 {
-	"meta":
-	[
+	"meta": [
 		{
 			"name": "week",
 			"type": "Date"
@@ -23,8 +22,7 @@
 		}
 	],
 
-	"data":
-	[
+	"data": [
 		{
 			"week": "2019-12-29",
 			"hour": 12,
@@ -8933,8 +8931,7 @@
 
 	"rows": 1272,
 
-	"statistics":
-	{
+	"statistics": {
 		"elapsed": 0.004129215,
 		"rows_read": 1184955,
 		"bytes_read": 17941429
