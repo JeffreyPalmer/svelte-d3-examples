@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as d3 from 'd3';
+	// import * as d3 from 'd3';
 	import * as aq from 'arquero';
 
 	import WeeklyVolumeHeader from './WeeklyVolumeHeader.svelte';
@@ -13,23 +13,50 @@
 	const highlightColor = 'gold';
 	const normalColor = '#ccc';
 
+	type Data = {
+		week: string;
+		hour: number;
+		pull_requests: string;
+		issues: string;
+		branches: string;
+	};
+	type InputData = {
+		data: Data[];
+	};
+	type ParsedData = {
+		count: {
+			data: number[];
+		};
+		event: {
+			data: string[];
+		};
+		hour: {
+			data: number[];
+		};
+		week: {
+			data: Date[];
+		};
+	};
+
 	async function loadData() {
-		const rawData = json;
-		aq.addFunction('d3_parse_date', d3.timeParse('%Y-%m-%d'), {
-			override: true
-		});
+		const rawData: InputData = json;
+		// Removed this as I couldn't see what it changed from the default
+		// aq.addFunction('d3_parse_date', d3.timeParse('%Y-%m-%d'), {
+		// 	override: true
+		// });
 		const allData = aq
 			.from(rawData.data)
 			.fold(['pull_requests', 'issues', 'branches'], {
 				as: ['event', 'count']
 			})
 			.derive({
-				count: (d) => aq.op.parse_int(d.count),
-				week: (d) => aq.op.d3_parse_date(d.week)
+				count: (d: ParsedData) => aq.op.parse_int(d.count, 10),
+				week: (d: ParsedData) => aq.op.parse_date(d.week)
 			});
 
 		return allData;
 	}
+	// TODO: Figure out how to type the ColumnTable from arquero sent to the template
 </script>
 
 <div style="--highlight-color: {highlightColor}">

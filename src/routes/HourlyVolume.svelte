@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
 	import * as d3 from 'd3';
-	import * as aq from 'arquero';
-	import { color } from 'd3';
+	/* import * as aq from 'arquero'; */
+	/* import { color } from 'd3'; */
 
-	export let title;
-	export let width;
+	export let title: string;
+	export let width: number;
 	const ratio = 5 / 1;
 	$: height = width / ratio;
 
@@ -15,8 +15,8 @@
 	const maxRadius = 2.5;
 	const boundPercentile = 0.99;
 
-	export let highlightColor;
-	export let normalColor;
+	export let highlightColor: string;
+	export let normalColor: string;
 
 	export let data;
 	const xAccessor = (d) => d.week;

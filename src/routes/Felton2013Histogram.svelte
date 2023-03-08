@@ -2,7 +2,12 @@
 	import * as d3 from 'd3';
 	import * as R from 'ramda';
 
-	export let data = [
+	type Data = {
+		month: string;
+		total: number;
+	};
+
+	export let data: Data[] = [
 		{
 			month: '2020-01-01',
 			total: 236
@@ -82,13 +87,17 @@
 	const labelYOffset = 15;
 
 	const formatter = d3.format('.0f');
-	const dateParser = d3.timeParse('%Y-%m-%d');
-	const xAccessor = (d) => dateParser(d.month);
-	const yAccessor = (d) => d.total;
+
+	// removing null from output of parse function
+	const dateParser: (s: string) => Date = (s: string) =>
+		d3.timeParse('%Y-%m-%d')(s) || new Date(s);
+
+	const xAccessor = (d: Data) => dateParser(d.month);
+	const yAccessor = (d: Data) => d.total;
 
 	// How to calculate the scale factor which will get us the most-significant digit
 	$: yMin = d3.min(data, yAccessor);
-	$: scale = Math.pow(10, Math.floor(Math.log10(yMin)));
+	$: scale = Math.pow(10, Math.floor(Math.log10(yMin ? yMin : 0)));
 	// $: console.log("SCALE", scale);
 
 	$: xScale = d3
@@ -99,18 +108,27 @@
 	// Mention that you need to reverse the top and bottom in the range
 	$: yScale = d3
 		.scaleLinear()
-		.domain([0, d3.max(data, yAccessor) + d3.max(data, yAccessor) / 10])
+		.domain([
+			0,
+			Math.max(...data.map(yAccessor)) + Math.max(...data.map(yAccessor)) / 10
+		])
 		.range([height - margins.bottom, margins.top])
 		.nice();
 
-	function formatDate(date) {
-		let options = {
+	function formatDate(date: Date) {
+		const options: Intl.DateTimeFormatOptions = {
 			month: 'short'
 		};
 		return date.toLocaleString('en-us', options);
 	}
 
-	function generateFeltonLine(data, xScale, xAccessor, yScale, yAccessor) {
+	function generateFeltonLine(
+		data: Data[],
+		xScale: (arg: string) => number,
+		xAccessor: (arg: Data) => string,
+		yScale: (arg: number) => number,
+		yAccessor: (arg: Data) => number
+	) {
 		// this is only correct because of 0-based arrays and # segments = # points - 1
 		/* const segments = data.length; */
 		const segmentWidth =

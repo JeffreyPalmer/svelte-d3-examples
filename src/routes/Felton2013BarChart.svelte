@@ -71,22 +71,22 @@
 
 	const highlightColor = 'cornflowerblue';
 
-	const metricAccessor = (d) => d.total_actions;
-	const titleAccessor = (d) => d.name;
+	const metricAccessor = (d: Data) => d.total_actions;
+	const titleAccessor = (d: Data) => d.name;
 
 	// Grab the maximum value from the data for later use
 	const xMax = d3.max(data, metricAccessor);
 	const xScale = d3
 		.scaleLinear()
-		.domain([0, xMax])
+		.domain([0, xMax ? xMax : 0])
 		.range([margins.left, width - margins.right]);
 
 	// Calculate the index-based offset from the top of the SVG
 	// Note: Add textHeight to shift text below the starting point
 	//       as text is placed according the the baseline
-	const yOffsetFn = (i) => lineHeight * i + margins.top + textHeight;
+	const yOffsetFn = (i: number) => lineHeight * i + margins.top + textHeight;
 
-	const diff = (a, b) => metricAccessor(b) - metricAccessor(a);
+	const diff = (a: Data, b: Data) => metricAccessor(b) - metricAccessor(a);
 	const topParticipants = R.take(topN, R.sort(diff, data));
 </script>
 
@@ -103,7 +103,7 @@
 		<text
 			class="label highlight"
 			text-anchor="end"
-			x={xScale(xMax)}
+			x={xScale(xMax ? xMax : 0)}
 			y={yOffsetFn(i)}
 			>{metricAccessor(participant)}
 		</text>
@@ -118,7 +118,7 @@
 		<!-- Right to left -->
 		<line
 			class="dash"
-			x1={xScale(xMax)}
+			x1={xScale(xMax ? xMax : 0)}
 			x2={xScale(0)}
 			y1={yOffsetFn(i) + barOffset}
 			y2={yOffsetFn(i) + barOffset}
