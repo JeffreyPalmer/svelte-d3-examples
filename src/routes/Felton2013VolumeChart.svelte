@@ -6,37 +6,14 @@
 	import HourlyVolume from './HourlyVolume.svelte';
 
 	import json from '$lib/data/volume-weekly-activity-by-hour.json';
+	import type ColumnTable from 'arquero/dist/types/table/column-table';
+	import type { InputData, ParsedData } from './datatypes';
 
 	export let width = 1200;
 	// export let height = 800;
 
 	const highlightColor = 'gold';
 	const normalColor = '#ccc';
-
-	type Data = {
-		week: string;
-		hour: number;
-		pull_requests: string;
-		issues: string;
-		branches: string;
-	};
-	type InputData = {
-		data: Data[];
-	};
-	type ParsedData = {
-		count: {
-			data: number[];
-		};
-		event: {
-			data: string[];
-		};
-		hour: {
-			data: number[];
-		};
-		week: {
-			data: Date[];
-		};
-	};
 
 	async function loadData() {
 		const rawData: InputData = json;
@@ -56,7 +33,26 @@
 
 		return allData;
 	}
-	// TODO: Figure out how to type the ColumnTable from arquero sent to the template
+
+	let loaded = false;
+	let pullReqs: ParsedData[] = [];
+	let issues: ParsedData[] = [];
+	let branches: ParsedData[] = [];
+	let data = {};
+
+	loadData().then((res: ColumnTable) => {
+		// resorting to ! as any undefined checks breaks arquero
+		// it's fine in this case but should be avoided
+		pullReqs = res
+			.filter((d) => d!.event === 'pull_requests')
+			.objects() as ParsedData[];
+		issues = res.filter((d) => d!.event === 'issues').objects() as ParsedData[];
+		branches = res
+			.filter((d) => d!.event === 'branches')
+			.objects() as ParsedData[];
+		data = res;
+		loaded = true;
+	});
 </script>
 
 <div style="--highlight-color: {highlightColor}">
@@ -64,29 +60,29 @@
 		Felton 2013 Volume Chart
 	</p>
 	<div class="p-5">
-		{#await loadData() then data}
+		{#if loaded}
 			<WeeklyVolumeHeader {data} {width} />
 			<HourlyVolume
-				data={data.filter((d) => d.event === 'pull_requests').objects()}
+				data={pullReqs}
 				{width}
 				{highlightColor}
 				{normalColor}
 				title="PULL REQUESTS"
 			/>
 			<HourlyVolume
-				data={data.filter((d) => d.event === 'issues').objects()}
+				data={issues}
 				{width}
 				{highlightColor}
 				{normalColor}
 				title="ISSUES"
 			/>
 			<HourlyVolume
-				data={data.filter((d) => d.event === 'branches').objects()}
+				data={branches}
 				{width}
 				{highlightColor}
 				{normalColor}
 				title="BRANCHES"
 			/>
-		{/await}
+		{/if}
 	</div>
 </div>

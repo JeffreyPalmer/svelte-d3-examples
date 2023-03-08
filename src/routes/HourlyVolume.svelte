@@ -1,7 +1,8 @@
 <script lang="ts">
 	import * as d3 from 'd3';
-	/* import * as aq from 'arquero'; */
-	/* import { color } from 'd3'; */
+	// import * as aq from 'arquero';
+	// import { color } from 'd3';
+	import type { ParsedData } from './datatypes';
 
 	export let title: string;
 	export let width: number;
@@ -18,12 +19,13 @@
 	export let highlightColor: string;
 	export let normalColor: string;
 
-	export let data;
-	const xAccessor = (d) => d.week;
-	const yAccessor = (d) => d.hour;
-	const sizeAccessor = (d) => d.count;
+	export let data: ParsedData[];
+	const xAccessor = (d: ParsedData) => d.week;
+	const yAccessor = (d: ParsedData) => d.hour;
+	const sizeAccessor = (d: ParsedData) => d.count;
+	console.log(data);
 
-	$: weeks = data.filter((d) => yAccessor(d) == 0);
+	$: weeks = data.filter((d: ParsedData) => yAccessor(d) == 0);
 	$: sidePadding = width / weeks.length / 2;
 
 	$: xScale = d3

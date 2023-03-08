@@ -88,11 +88,9 @@
 
 	const formatter = d3.format('.0f');
 
-	// removing null from output of parse function
-	const dateParser: (s: string) => Date = (s: string) =>
-		d3.timeParse('%Y-%m-%d')(s) || new Date(s);
+	const dateParser = d3.timeParse('%Y-%m-%d');
 
-	const xAccessor = (d: Data) => dateParser(d.month);
+	const xAccessor = (d: Data): Date => dateParser(d.month) as Date;
 	const yAccessor = (d: Data) => d.total;
 
 	// How to calculate the scale factor which will get us the most-significant digit
@@ -102,7 +100,10 @@
 
 	$: xScale = d3
 		.scaleTime()
-		.domain([dateParser('2020-01-01'), dateParser('2021-01-01')])
+		.domain([
+			dateParser('2020-01-01') as Date,
+			dateParser('2021-01-01') as Date
+		])
 		.range([margins.left, width - margins.right]);
 
 	// Mention that you need to reverse the top and bottom in the range
@@ -115,7 +116,7 @@
 		.range([height - margins.bottom, margins.top])
 		.nice();
 
-	function formatDate(date: Date) {
+	function formatDate(date: Date | d3.NumberValue | string): string {
 		const options: Intl.DateTimeFormatOptions = {
 			month: 'short'
 		};
@@ -124,11 +125,11 @@
 
 	function generateFeltonLine(
 		data: Data[],
-		xScale: (arg: string) => number,
-		xAccessor: (arg: Data) => string,
+		xScale: (arg: Date | d3.NumberValue) => number,
+		xAccessor: (arg: Data) => Date,
 		yScale: (arg: number) => number,
 		yAccessor: (arg: Data) => number
-	) {
+	): [number, number][] {
 		// this is only correct because of 0-based arrays and # segments = # points - 1
 		/* const segments = data.length; */
 		const segmentWidth =
@@ -153,7 +154,7 @@
 			xScale(xAccessor(data[data.length - 1])),
 			yScale(yAccessor(data[data.length - 1]))
 		]);
-		return result;
+		return result as [number, number][];
 	}
 
 	// First attempt - using 'curveStepAfter'
@@ -170,21 +171,22 @@
 	// $: console.log("FELTON LINE:", yLine);
 
 	// For binding in the markup below
-	let xAxis;
+	let xAxis: SVGGElement;
 
 	// Now we need some hackery to get around the extra element that was added at the end
 	// Explicitly use the dates from the original data
 	$: {
 		const xAxisGenerator = d3
-			.axisBottom()
+			.axisBottom(xScale)
 			.tickSize(0)
 			.scale(xScale)
-			.tickFormat(function (v) {
-				return formatDate(v);
-			})
+			.tickFormat((v) => formatDate(v))
 			.tickValues(R.map(xAccessor, data));
 		// Now remove the axis line
-		d3.select(xAxis).call(xAxisGenerator).select('.domain').remove();
+		d3.select<SVGGElement, {}>(xAxis)
+			.call(xAxisGenerator)
+			.select('.domain')
+			.remove();
 	}
 </script>
 
