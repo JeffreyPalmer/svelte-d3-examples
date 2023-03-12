@@ -1,8 +1,6 @@
 <script lang="ts">
 	import * as d3 from 'd3';
-	// import * as aq from 'arquero';
-	// import { color } from 'd3';
-	import type { ParsedData } from './datatypes';
+	import type { ParsedData } from '$lib/types';
 
 	export let title: string;
 	export let width: number;
@@ -22,15 +20,16 @@
 	export let data: ParsedData[];
 	const xAccessor = (d: ParsedData) => d.week;
 	const yAccessor = (d: ParsedData) => d.hour;
-	const sizeAccessor = (d: ParsedData) => d.count;
-	console.log(data);
+	const sizeAccessor = (d: ParsedData) => Number(d.count);
 
-	$: weeks = data.filter((d: ParsedData) => yAccessor(d) == 0);
-	$: sidePadding = width / weeks.length / 2;
+	const weeks = data.filter((d: ParsedData) => yAccessor(d) == 0);
+	const sidePadding = width / weeks.length / 2;
+
+	const xDomain = d3.extent(weeks, xAccessor) as [Date, Date];
 
 	$: xScale = d3
 		.scaleTime()
-		.domain(d3.extent(weeks, xAccessor))
+		.domain(xDomain)
 		.range([sidePadding, width - sidePadding]);
 
 	$: yScale = d3
@@ -40,28 +39,29 @@
 
 	// find an upper limit for the radius scale based on boundPercentile
 	// this allows us to use .clamp(true) to keep outliers from overwhelming the visual
-	$: sizeLimit = d3.quantile(data, boundPercentile, sizeAccessor);
+	const sizeLimit = d3.quantile(data, boundPercentile, sizeAccessor) ?? 0;
 
-	$: radiusScale = d3
+	const radiusScale = d3
 		.scaleSqrt()
 		.domain([0, sizeLimit])
 		.range([0, maxRadius])
 		.clamp(true);
 
-	function getHoursForWeek(data, week) {
+	const getHoursForWeek = (data: ParsedData[], week: Date) => {
 		const result = d3.filter(
 			data,
-			(d) => xAccessor(d)?.valueOf() === week.valueOf()
+			(d: ParsedData) => xAccessor(d)?.valueOf() === week.valueOf()
 		);
 		return result;
-	}
+	};
 
-	$: p80 = d3.quantile(data, 0.8, sizeAccessor);
-	$: colorScale = d3
-		.scaleThreshold()
-		.domain([p80])
+	const p80 = d3.quantile(data, 0.9, (d) => sizeAccessor(d)) ?? 0;
+	const colorScale = d3
+		.scaleLinear<string>()
+		.domain([0, p80])
 		.range([normalColor, highlightColor]);
-	$: opacityScale = d3.scaleThreshold().domain([p80]).range([0.5, 1.0]);
+
+	const opacityScale = d3.scaleThreshold().domain([p80]).range([0.5, 1.0]);
 </script>
 
 <svg viewBox="0 0 {width} {height}">

@@ -2,6 +2,8 @@
 	import * as d3 from 'd3';
 	import * as aq from 'arquero';
 	import { generateFeltonLine } from '$lib/utils';
+	import type ColumnTable from 'arquero/dist/types/table/column-table';
+	import type { WeekAndTotal } from '$lib/types';
 
 	export let width: number;
 	// TODO: What's the right ratio for this component?
@@ -11,51 +13,55 @@
 	const topPadding = 20;
 	const axisPadding = 16;
 
-	export let data;
+	export let data: ColumnTable;
 
 	// given an array of weekly total elements, create a new entry
 	// that has the same value as the existing last entry but is
 	// one week in the future
-	function createNewLastElement(data) {
+	function createNewLastElement(data: WeekAndTotal[]) {
 		const newElement = { ...data[data.length - 1] };
 		newElement.week = d3.timeWeek.offset(newElement.week, 1);
 		return newElement;
 	}
 
 	// get the count for every week
-	$: weeklyTotals = data
+	const weeklyTotals = data
 		.groupby('week')
-		.rollup({ total: (d) => aq.op.sum(d.count) })
+		.rollup({ total: (d) => aq.op.sum(d!.count) })
 		.orderby('week')
-		.objects();
+		.objects() as WeekAndTotal[];
 
-	$: augmentedWeeklyTotals = [
+	const augmentedWeeklyTotals: WeekAndTotal[] = [
 		...weeklyTotals,
 		createNewLastElement(weeklyTotals)
 	];
 
-	const xAccessor = (d) => d.week;
-	const yAccessor = (d) => d.total;
+	const xAccessor = (d: WeekAndTotal): Date => d.week;
+	const yAccessor = (d: WeekAndTotal): number => d.total;
+
+	const xs = augmentedWeeklyTotals.map(xAccessor) as Date[];
+	const ys = augmentedWeeklyTotals.map(yAccessor) as number[];
+
 	$: xScale = d3
 		.scaleTime()
-		.domain(d3.extent(augmentedWeeklyTotals, xAccessor))
+		.domain(d3.extent(xs) as [Date, Date])
 		.range([0, width]);
 
 	$: yScale = d3
 		.scaleLinear()
-		.domain([0, d3.max(augmentedWeeklyTotals, yAccessor)])
+		.domain([0, d3.max(ys) as number])
 		.range([height, topPadding])
 		.nice();
 
-	$: yLine = d3.line()(
-		generateFeltonLine(
-			augmentedWeeklyTotals,
-			xScale,
-			xAccessor,
-			yScale,
-			yAccessor
-		)
+	const feltonData = generateFeltonLine(
+		augmentedWeeklyTotals,
+		xScale,
+		xAccessor,
+		yScale,
+		yAccessor
 	);
+
+	$: yLine = d3.line()(feltonData);
 	// use d3.bisect to find the location closest to the start of the month?
 
 	const formatDate = d3.timeFormat('%b');

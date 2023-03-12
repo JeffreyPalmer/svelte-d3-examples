@@ -7,7 +7,7 @@
 
 	import json from '$lib/data/volume-weekly-activity-by-hour.json';
 	import type ColumnTable from 'arquero/dist/types/table/column-table';
-	import type { InputData, ParsedData } from './datatypes';
+	import type { InputData, ParsedData } from '$lib/types';
 
 	export let width = 1200;
 	// export let height = 800;
@@ -38,7 +38,7 @@
 	let pullReqs: ParsedData[] = [];
 	let issues: ParsedData[] = [];
 	let branches: ParsedData[] = [];
-	let data = {};
+	let data: ColumnTable;
 
 	loadData().then((res: ColumnTable) => {
 		// resorting to ! as any undefined checks breaks arquero
@@ -50,7 +50,7 @@
 		branches = res
 			.filter((d) => d!.event === 'branches')
 			.objects() as ParsedData[];
-		data = res;
+		data = res as ColumnTable;
 		loaded = true;
 	});
 </script>

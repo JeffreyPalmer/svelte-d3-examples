@@ -14,3 +14,12 @@ export type ParsedData = {
   hour: number
   week: Date
 };
+export type WeekAndTotal = {
+  week: Date
+  total: number
+}
+
+export type DataAndTime = {
+  value: number;
+  date: string;
+};
