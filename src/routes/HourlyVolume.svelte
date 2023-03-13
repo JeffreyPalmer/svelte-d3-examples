@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as d3 from 'd3';
-	import type { ParsedData } from '$lib/types';
+	import type { ParsedGHData } from '$lib/types';
 
 	export let title: string;
 	export let width: number;
@@ -17,12 +17,12 @@
 	export let highlightColor: string;
 	export let normalColor: string;
 
-	export let data: ParsedData[];
-	const xAccessor = (d: ParsedData) => d.week;
-	const yAccessor = (d: ParsedData) => d.hour;
-	const sizeAccessor = (d: ParsedData) => Number(d.count);
+	export let data: ParsedGHData[];
+	const xAccessor = (d: ParsedGHData) => d.week;
+	const yAccessor = (d: ParsedGHData) => d.hour;
+	const sizeAccessor = (d: ParsedGHData) => Number(d.count);
 
-	const weeks = data.filter((d: ParsedData) => yAccessor(d) == 0);
+	const weeks = data.filter((d: ParsedGHData) => yAccessor(d) == 0);
 	const sidePadding = width / weeks.length / 2;
 
 	const xDomain = d3.extent(weeks, xAccessor) as [Date, Date];
@@ -47,14 +47,15 @@
 		.range([0, maxRadius])
 		.clamp(true);
 
-	const getHoursForWeek = (data: ParsedData[], week: Date) => {
+	const getHoursForWeek = (data: ParsedGHData[], week: Date) => {
 		const result = d3.filter(
 			data,
-			(d: ParsedData) => xAccessor(d)?.valueOf() === week.valueOf()
+			(d: ParsedGHData) => xAccessor(d)?.valueOf() === week.valueOf()
 		);
 		return result;
 	};
 
+	// biggest rewrite of typing project, have a look and see if satisfied:
 	const p80 = d3.quantile(data, 0.9, (d) => sizeAccessor(d)) ?? 0;
 	const colorScale = d3
 		.scaleLinear<string>()

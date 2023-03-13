@@ -1,4 +1,6 @@
-import type { WeekAndTotal } from '$lib/types'
+type FeltonData = {
+  [key: string]: Date | number | string
+}
 
 export function poissonDiscSampler(
   width: number,
@@ -78,11 +80,11 @@ export function poissonDiscSampler(
 }
 
 export function generateFeltonLine(
-  data: WeekAndTotal[],
+  data: FeltonData[],
   xScale: (arg: Date) => number,
-  xAccessor: (arg: WeekAndTotal) => Date,
+  xAccessor: (arg: FeltonData) => Date,
   yScale: (arg: number) => number,
-  yAccessor: (arg: WeekAndTotal) => number
+  yAccessor: (arg: FeltonData) => number
 ): [number, number][] {
   // this is only correct because of 0-based arrays and # segments = # points - 1
   // const segments = data.length

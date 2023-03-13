@@ -7,7 +7,7 @@
 		generateClosedFeltonPolygon
 	} from '$lib/utils';
 
-	export let data = [
+	export let data: Data[] = [
 		{
 			month: '2020-01-01',
 			top_total: 236,
@@ -71,6 +71,12 @@
 		}
 	];
 
+	type Data = {
+		month: string;
+		top_total: number;
+		bottom_total: number;
+	};
+
 	// Massage the data so that there are enough points to complete the path
 	// Copy the final entry in the array
 	const myClonedData = R.clone(data[11]);
@@ -94,19 +100,23 @@
 	// We know we're showing 12 months so divide into 24 intevals
 	// TODO: generalize
 	$: labelXOffset = (width - margins.left - margins.right) / 24;
-	$: console.log('X-OFFSET', labelXOffset);
+	// $: console.log('X-OFFSET', labelXOffset);
 
 	/* const labelYOffset = 15; */
 
 	/* const formatter = d3.format(".0f"); */
 	const dateParser = d3.timeParse('%Y-%m-%d');
-	const xAccessor = (d) => dateParser(d.month);
-	const topAccessor = (d) => d.top_total;
-	const bottomAccessor = (d) => d.bottom_total;
+	const xAccessor = (d: { [key: string]: string }): Date =>
+		dateParser(d.month) as Date;
+	const topAccessor = (d: Data): number => d.top_total;
+	const bottomAccessor = (d: Data): number => d.bottom_total;
 
 	$: xScale = d3
 		.scaleTime()
-		.domain([dateParser('2020-01-01'), dateParser('2021-01-01')])
+		.domain([
+			dateParser('2020-01-01') as Date,
+			dateParser('2021-01-01') as Date
+		])
 		.range([margins.left, width - margins.right]);
 
 	// The top scale goes from midpoint to top margin
@@ -114,7 +124,7 @@
 	// to ensure there is headroom on the chart
 	$: topScale = d3
 		.scaleLinear()
-		.domain([0, d3.max(data, topAccessor) * 1.1])
+		.domain([0, (d3.max(data, topAccessor) as number) * 1.1])
 		.range([
 			(height - margins.bottom - margins.top) / 2 + margins.top,
 			margins.top
@@ -126,19 +136,19 @@
 	// to ensure there is footroom (?) on the chart
 	$: bottomScale = d3
 		.scaleLinear()
-		.domain([0, d3.max(data, bottomAccessor) * 1.1])
+		.domain([0, (d3.max(data, bottomAccessor) as number) * 1.1])
 		.range([
 			(height - margins.bottom - margins.top) / 2 + margins.top,
 			height - margins.bottom
 		])
 		.nice();
 
-	function formatDate(date) {
-		let options = {
+	const formatDate = (date: Date): string => {
+		let options: Intl.DateTimeFormatOptions = {
 			month: 'short'
 		};
 		return date.toLocaleString('en-us', options);
-	}
+	};
 
 	// First attempt - using 'curveStepAfter'
 	// $: yLine = d3
@@ -148,31 +158,35 @@
 	//     .curve(d3.curveStepAfter)(myData);
 
 	// Second attempt - Felton-style connectors
-	$: topLine = d3.line()(
-		generateFeltonLine(augmentedData, xScale, xAccessor, topScale, topAccessor)
+	const topFeltonData = generateFeltonLine(
+		augmentedData,
+		xScale,
+		xAccessor,
+		topScale,
+		topAccessor
 	);
-	$: bottomLine = d3.line()(
-		generateFeltonLine(
-			augmentedData,
-			xScale,
-			xAccessor,
-			bottomScale,
-			bottomAccessor
-		)
+	const botFeltonData = generateFeltonLine(
+		augmentedData,
+		xScale,
+		xAccessor,
+		bottomScale,
+		bottomAccessor
 	);
+	$: topLine = d3.line()(topFeltonData);
+	$: bottomLine = d3.line()(botFeltonData);
 
 	// For binding in the markup below
-	let xAxis;
+	let xAxis: SVGGElement;
 
 	// Now we need some hackery to get around the extra element that was added at the end
 	// Explicitly use the dates from the original data
 	$: {
 		const xAxisGenerator = d3
-			.axisBottom()
+			.axisBottom(xScale)
 			.tickSize(0)
 			.scale(xScale)
 			.tickFormat(function (v) {
-				return formatDate(v);
+				return formatDate(v as Date);
 			})
 			.tickValues(R.map(xAccessor, data));
 		// Now remove the axis line

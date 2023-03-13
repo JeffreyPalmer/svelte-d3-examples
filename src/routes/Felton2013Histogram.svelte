@@ -91,7 +91,7 @@
 	const dateParser = d3.timeParse('%Y-%m-%d');
 
 	const xAccessor = (d: Data): Date => dateParser(d.month) as Date;
-	const yAccessor = (d: Data) => d.total;
+	const yAccessor = (d: Data): number => d.total;
 
 	// How to calculate the scale factor which will get us the most-significant digit
 	$: yMin = d3.min(data, yAccessor);
@@ -116,12 +116,12 @@
 		.range([height - margins.bottom, margins.top])
 		.nice();
 
-	function formatDate(date: Date | d3.NumberValue | string): string {
+	const formatDate = (date: Date | d3.NumberValue | string): string => {
 		const options: Intl.DateTimeFormatOptions = {
 			month: 'short'
 		};
 		return date.toLocaleString('en-us', options);
-	}
+	};
 
 	function generateFeltonLine(
 		data: Data[],

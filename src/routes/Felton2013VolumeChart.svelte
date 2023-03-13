@@ -7,7 +7,7 @@
 
 	import json from '$lib/data/volume-weekly-activity-by-hour.json';
 	import type ColumnTable from 'arquero/dist/types/table/column-table';
-	import type { InputData, ParsedData } from '$lib/types';
+	import type { GHData, ParsedGHData } from '$lib/types';
 
 	export let width = 1200;
 	// export let height = 800;
@@ -16,7 +16,7 @@
 	const normalColor = '#ccc';
 
 	async function loadData() {
-		const rawData: InputData = json;
+		const rawData: { data: GHData[] } = json;
 		// Removed this as I couldn't see what it changed from the default
 		// aq.addFunction('d3_parse_date', d3.timeParse('%Y-%m-%d'), {
 		// 	override: true
@@ -27,17 +27,17 @@
 				as: ['event', 'count']
 			})
 			.derive({
-				count: (d: ParsedData) => aq.op.parse_int(d.count, 10),
-				week: (d: ParsedData) => aq.op.parse_date(d.week)
+				count: (d: ParsedGHData) => aq.op.parse_int(d.count, 10),
+				week: (d: ParsedGHData) => aq.op.parse_date(d.week)
 			});
 
 		return allData;
 	}
 
 	let loaded = false;
-	let pullReqs: ParsedData[] = [];
-	let issues: ParsedData[] = [];
-	let branches: ParsedData[] = [];
+	let pullReqs: ParsedGHData[] = [];
+	let issues: ParsedGHData[] = [];
+	let branches: ParsedGHData[] = [];
 	let data: ColumnTable;
 
 	loadData().then((res: ColumnTable) => {
@@ -45,11 +45,13 @@
 		// it's fine in this case but should be avoided
 		pullReqs = res
 			.filter((d) => d!.event === 'pull_requests')
-			.objects() as ParsedData[];
-		issues = res.filter((d) => d!.event === 'issues').objects() as ParsedData[];
+			.objects() as ParsedGHData[];
+		issues = res
+			.filter((d) => d!.event === 'issues')
+			.objects() as ParsedGHData[];
 		branches = res
 			.filter((d) => d!.event === 'branches')
-			.objects() as ParsedData[];
+			.objects() as ParsedGHData[];
 		data = res as ColumnTable;
 		loaded = true;
 	});

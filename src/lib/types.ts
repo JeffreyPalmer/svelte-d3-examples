@@ -1,19 +1,18 @@
-export type Data = {
+export type GHData = {
   week: string;
   hour: number;
   pull_requests: string;
   issues: string;
   branches: string;
 };
-export type InputData = {
-  data: Data[];
-};
-export type ParsedData = {
+
+export type ParsedGHData = {
   count: number
   event: number
   hour: number
   week: Date
 };
+
 export type WeekAndTotal = {
   week: Date
   total: number

@@ -73,20 +73,20 @@
 	);
 	$: midMonths = months.map((d) => d3.timeDay.offset(d, 15));
 
-	let xAxis;
+	let xAxis: SVGGElement;
 	$: {
 		const xAxisGenerator = d3
-			.axisBottom()
+			.axisBottom(xScale)
 			.tickSize(0)
 			.scale(xScale)
-			.tickFormat((d) => formatDate(d))
+			.tickFormat((d) => formatDate(d as Date))
 			.tickValues(midMonths);
 
 		d3.select(xAxis).call(xAxisGenerator).select('.domain').remove();
 	}
 
 	const dateFinder = d3.bisector(xAccessor);
-	function findHeightAtDate(data, date) {
+	const findHeightAtDate = (data: WeekAndTotal[], date: Date) => {
 		const index = dateFinder.left(data, date) - 1;
 
 		// if the current date is a sunday (the start of the week) we'll
@@ -100,7 +100,7 @@
 		} else {
 			return yScale(yAccessor(data[index]));
 		}
-	}
+	};
 </script>
 
 <svg viewBox="0 0 {width} {height}">
