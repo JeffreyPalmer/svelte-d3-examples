@@ -7,6 +7,8 @@
 		generateClosedFeltonPolygon
 	} from '$lib/utils';
 
+	import type { FeltonData } from '$lib/types';
+
 	export let data: Data[] = [
 		{
 			month: '2020-01-01',
@@ -106,12 +108,19 @@
 
 	/* const formatter = d3.format(".0f"); */
 	const dateParser = d3.timeParse('%Y-%m-%d');
-	const xAccessor = (d: { [key: string]: string }): Date =>
-		dateParser(d.month) as Date;
-	const topAccessor = (d: Data): number => d.top_total;
-	const bottomAccessor = (d: Data): number => d.bottom_total;
+	const xAccessor = (d: FeltonData): Date => {
+		if (typeof d.month === 'string') {
+			return dateParser(d.month) as Date;
+		}
+		if (typeof d.month === 'number') {
+			return new Date(d.month);
+		}
+		return d.month;
+	};
+	const topAccessor = (d: FeltonData): number => Number(d.top_total);
+	const bottomAccessor = (d: FeltonData): number => Number(d.bottom_total);
 
-	$: xScale = d3
+	const xScale = d3
 		.scaleTime()
 		.domain([
 			dateParser('2020-01-01') as Date,
@@ -122,7 +131,7 @@
 	// The top scale goes from midpoint to top margin
 	// Add 10% of the max top value to the end of the domain
 	// to ensure there is headroom on the chart
-	$: topScale = d3
+	const topScale = d3
 		.scaleLinear()
 		.domain([0, (d3.max(data, topAccessor) as number) * 1.1])
 		.range([
@@ -134,7 +143,7 @@
 	// The bottom scale goes from midpoint to bottom margin
 	// Add 10% of the max bottom value to the end of the domain
 	// to ensure there is footroom (?) on the chart
-	$: bottomScale = d3
+	const bottomScale = d3
 		.scaleLinear()
 		.domain([0, (d3.max(data, bottomAccessor) as number) * 1.1])
 		.range([
@@ -165,6 +174,7 @@
 		topScale,
 		topAccessor
 	);
+
 	const botFeltonData = generateFeltonLine(
 		augmentedData,
 		xScale,
@@ -195,10 +205,14 @@
 
 	// Use the generator to generate all of the points
 	// so that they can be iterated over by svelte
-	function generatePoissonPoints(width, height, radius) {
+	function generatePoissonPoints(
+		width: number,
+		height: number,
+		radius: number
+	) {
 		const sampler = poissonDiscSampler(width, height, radius);
 		let points = [];
-		let a: [number, number] = sampler();
+		let a: [number, number] | undefined = sampler();
 		while (a) {
 			points.push(a);
 			a = sampler();

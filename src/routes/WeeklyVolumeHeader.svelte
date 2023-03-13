@@ -3,7 +3,7 @@
 	import * as aq from 'arquero';
 	import { generateFeltonLine } from '$lib/utils';
 	import type ColumnTable from 'arquero/dist/types/table/column-table';
-	import type { WeekAndTotal } from '$lib/types';
+	import type { FeltonData } from '$lib/types';
 
 	export let width: number;
 	// TODO: What's the right ratio for this component?
@@ -29,25 +29,27 @@
 		.groupby('week')
 		.rollup({ total: (d) => aq.op.sum(d!.count) })
 		.orderby('week')
-		.objects() as WeekAndTotal[];
+		.objects() as FeltonData[];
 
-	const augmentedWeeklyTotals: WeekAndTotal[] = [
+	const augmentedWeeklyTotals: FeltonData[] = [
 		...weeklyTotals,
 		createNewLastElement(weeklyTotals)
 	];
 
-	const xAccessor = (d: WeekAndTotal): Date => d.week;
-	const yAccessor = (d: WeekAndTotal): number => d.total;
+	const xAccessor = (d: FeltonData): string =>
+		typeof d.week === 'string' ? d.week : String(d.week);
+	const yAccessor = (d: FeltonData): number =>
+		typeof d.total === 'number' ? d.number : Number(d.number);
 
 	const xs = augmentedWeeklyTotals.map(xAccessor) as Date[];
 	const ys = augmentedWeeklyTotals.map(yAccessor) as number[];
 
-	$: xScale = d3
+	const xScale = d3
 		.scaleTime()
 		.domain(d3.extent(xs) as [Date, Date])
 		.range([0, width]);
 
-	$: yScale = d3
+	const yScale = d3
 		.scaleLinear()
 		.domain([0, d3.max(ys) as number])
 		.range([height, topPadding])
@@ -86,7 +88,7 @@
 	}
 
 	const dateFinder = d3.bisector(xAccessor);
-	const findHeightAtDate = (data: WeekAndTotal[], date: Date) => {
+	const findHeightAtDate = (data: FeltonData[], date: Date) => {
 		const index = dateFinder.left(data, date) - 1;
 
 		// if the current date is a sunday (the start of the week) we'll

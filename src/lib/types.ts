@@ -22,3 +22,7 @@ export type DataAndTime = {
   value: number;
   date: string;
 };
+
+export type FeltonData = {
+  [key: string]: Date | number | string
+}

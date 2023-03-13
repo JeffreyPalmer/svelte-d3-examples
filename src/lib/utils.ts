@@ -1,12 +1,11 @@
-type FeltonData = {
-  [key: string]: Date | number | string
-}
+
+import type { FeltonData } from '$lib/types';
 
 export function poissonDiscSampler(
   width: number,
   height: number,
   radius: number
-) {
+): () => [number, number] | undefined {
   const k = 30, // maximum number of samples before rejection
     radius2 = radius * radius,
     R = 3 * radius2,
@@ -69,13 +68,13 @@ export function poissonDiscSampler(
     return true;
   }
 
-  function sample(x: number, y: number) {
+  function sample(x: number, y: number): [number, number] {
     const s = [x, y];
     queue.push(s);
     grid[gridWidth * ((y / cellSize) | 0) + ((x / cellSize) | 0)] = s;
     ++sampleSize;
     ++queueSize;
-    return s;
+    return s as [number, number];
   }
 }
 
@@ -118,7 +117,7 @@ export function generateClosedFeltonPolygon(
   xAccessor: any,
   yScale: any,
   yAccessor: any
-) {
+): [number, number][] {
   const lineSegments = generateFeltonLine(
     data,
     xScale,
