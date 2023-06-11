@@ -1,4 +1,4 @@
-import type { FeltonData } from '$lib/types';
+import type { FeltonData } from "$lib/types";
 
 export function poissonDiscSampler(
   width: number,
@@ -140,23 +140,23 @@ export function generateClosedFeltonPolygon(
 }
 
 export function isNumber(value: unknown): number {
-  if (typeof value === 'number' && !isNaN(value)) {
+  if (typeof value === "number" && !isNaN(value)) {
     return value;
-  } else if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+  } else if (typeof value === "string" && !isNaN(parseFloat(value))) {
     return parseFloat(value);
   }
 
-  throw new Error('Value is not a number');
+  throw new Error("Value is not a number");
 }
 
 export function convertToDate(value: string | number | Date): Date {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return new Date(value);
-  } else if (typeof value === 'number') {
+  } else if (typeof value === "number") {
     return new Date(value);
   } else if (value instanceof Date) {
     return value;
   } else {
-    throw new Error('Invalid input. Expected string, number, or Date.');
+    throw new Error("Invalid input. Expected string, number, or Date.");
   }
 }

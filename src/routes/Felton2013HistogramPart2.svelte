@@ -1,73 +1,73 @@
 <script lang="ts">
-  import * as d3 from 'd3';
-  import * as R from 'ramda';
+  import * as d3 from "d3";
+  import * as R from "ramda";
   import {
     poissonDiscSampler,
     generateFeltonLine,
     generateClosedFeltonPolygon
-  } from '$lib/utils';
+  } from "$lib/utils";
 
-  import type { FeltonData } from '$lib/types';
+  import type { FeltonData } from "$lib/types";
 
   export let data: Data[] = [
     {
-      month: '2020-01-01',
+      month: "2020-01-01",
       top_total: 236,
       bottom_total: 242
     },
     {
-      month: '2020-02-01',
+      month: "2020-02-01",
       top_total: 378,
       bottom_total: 127
     },
     {
-      month: '2020-03-01',
+      month: "2020-03-01",
       top_total: 282,
       bottom_total: 324
     },
     {
-      month: '2020-04-01',
+      month: "2020-04-01",
       top_total: 403,
       bottom_total: 182
     },
     {
-      month: '2020-05-01',
+      month: "2020-05-01",
       top_total: 359,
       bottom_total: 84
     },
     {
-      month: '2020-06-01',
+      month: "2020-06-01",
       top_total: 379,
       bottom_total: 324
     },
     {
-      month: '2020-07-01',
+      month: "2020-07-01",
       // top_total: 1200,
       top_total: 654,
       bottom_total: 158
     },
     {
-      month: '2020-08-01',
+      month: "2020-08-01",
       top_total: 305,
       bottom_total: 249
     },
     {
-      month: '2020-09-01',
+      month: "2020-09-01",
       top_total: 290,
       bottom_total: 72
     },
     {
-      month: '2020-10-01',
+      month: "2020-10-01",
       top_total: 313,
       bottom_total: 197
     },
     {
-      month: '2020-11-01',
+      month: "2020-11-01",
       top_total: 402,
       bottom_total: 532
     },
     {
-      month: '2020-12-01',
+      month: "2020-12-01",
       top_total: 286,
       bottom_total: 125
     }
@@ -83,15 +83,15 @@
   // Copy the final entry in the array
   const myClonedData = R.clone(data[11]);
   // Now set the date to one month after
-  myClonedData.month = '2021-01-01';
+  myClonedData.month = "2021-01-01";
   const augmentedData = [...R.clone(data), myClonedData];
 
   export let width = 1200;
   export let height = 800;
 
   const textHeight = 30;
-  const highlightColor = 'cornflowerblue';
-  const normalColor = '#ccc';
+  const highlightColor = "cornflowerblue";
+  const normalColor = "#ccc";
 
   const margins = {
     top: 50,
@@ -107,12 +107,12 @@
   /* const labelYOffset = 15; */
 
   /* const formatter = d3.format(".0f"); */
-  const dateParser = d3.timeParse('%Y-%m-%d');
+  const dateParser = d3.timeParse("%Y-%m-%d");
   const xAccessor = (d: FeltonData): Date => {
-    if (typeof d.month === 'string') {
+    if (typeof d.month === "string") {
       return dateParser(d.month) as Date;
     }
-    if (typeof d.month === 'number') {
+    if (typeof d.month === "number") {
       return new Date(d.month);
     }
     return d.month;
@@ -123,8 +123,8 @@
   const xScale = d3
     .scaleTime()
     .domain([
-      dateParser('2020-01-01') as Date,
-      dateParser('2021-01-01') as Date
+      dateParser("2020-01-01") as Date,
+      dateParser("2021-01-01") as Date
     ])
     .range([margins.left, width - margins.right]);
 
@@ -154,9 +154,9 @@
 
   const formatDate = (date: Date): string => {
     let options: Intl.DateTimeFormatOptions = {
-      month: 'short'
+      month: "short"
     };
-    return date.toLocaleString('en-us', options);
+    return date.toLocaleString("en-us", options);
   };
 
   // First attempt - using 'curveStepAfter'
@@ -200,7 +200,7 @@
       })
       .tickValues(R.map(xAccessor, data));
     // Now remove the axis line
-    d3.select(xAxis).call(xAxisGenerator).select('.domain').remove();
+    d3.select(xAxis).call(xAxisGenerator).select(".domain").remove();
   }
 
   // Use the generator to generate all of the points

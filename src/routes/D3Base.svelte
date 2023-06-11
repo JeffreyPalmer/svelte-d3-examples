@@ -1,11 +1,11 @@
 <script lang="ts">
-  import * as d3 from 'd3';
+  import * as d3 from "d3";
 
   export let width = 1200;
   export let height = 800;
 
   let textHeight = 30;
-  let highlightColor = 'cornflowerblue';
+  let highlightColor = "cornflowerblue";
 
   let margins = {
     top: 80,

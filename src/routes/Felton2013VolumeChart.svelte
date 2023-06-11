@@ -1,19 +1,19 @@
 <script lang="ts">
   // import * as d3 from 'd3';
-  import * as aq from 'arquero';
+  import * as aq from "arquero";
 
-  import WeeklyVolumeHeader from './WeeklyVolumeHeader.svelte';
-  import HourlyVolume from './HourlyVolume.svelte';
+  import WeeklyVolumeHeader from "./WeeklyVolumeHeader.svelte";
+  import HourlyVolume from "./HourlyVolume.svelte";
 
-  import json from '$lib/data/volume-weekly-activity-by-hour.json';
-  import type ColumnTable from 'arquero/dist/types/table/column-table';
-  import type { GHData, ParsedGHData } from '$lib/types';
+  import json from "$lib/data/volume-weekly-activity-by-hour.json";
+  import type ColumnTable from "arquero/dist/types/table/column-table";
+  import type { GHData, ParsedGHData } from "$lib/types";
 
   export let width = 1200;
   // export let height = 800;
 
-  const highlightColor = 'gold';
-  const normalColor = '#ccc';
+  const highlightColor = "gold";
+  const normalColor = "#ccc";
 
   async function loadData() {
     const rawData: { data: GHData[] } = json;
@@ -23,8 +23,8 @@
     // });
     const allData = aq
       .from(rawData.data)
-      .fold(['pull_requests', 'issues', 'branches'], {
-        as: ['event', 'count']
+      .fold(["pull_requests", "issues", "branches"], {
+        as: ["event", "count"]
       })
       .derive({
         count: (d: ParsedGHData) => aq.op.parse_int(d.count, 10),
@@ -45,13 +45,13 @@
     // arquero with ! and as, since the library does not
     // appear to support TS
     pullReqs = res
-      .filter((d) => d!.event === 'pull_requests') // eslint-disable-line @typescript-eslint/no-non-null-assertion
+      .filter((d) => d!.event === "pull_requests") // eslint-disable-line @typescript-eslint/no-non-null-assertion
       .objects() as ParsedGHData[];
     issues = res
-      .filter((d) => d!.event === 'issues') // eslint-disable-line @typescript-eslint/no-non-null-assertion
+      .filter((d) => d!.event === "issues") // eslint-disable-line @typescript-eslint/no-non-null-assertion
       .objects() as ParsedGHData[];
     branches = res
-      .filter((d) => d!.event === 'branches') // eslint-disable-line @typescript-eslint/no-non-null-assertion
+      .filter((d) => d!.event === "branches") // eslint-disable-line @typescript-eslint/no-non-null-assertion
       .objects() as ParsedGHData[];
     data = res;
     loaded = true;

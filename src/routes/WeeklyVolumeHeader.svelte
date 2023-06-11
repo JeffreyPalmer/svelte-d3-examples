@@ -1,10 +1,10 @@
 <script lang="ts">
-  import * as d3 from 'd3';
-  import * as aq from 'arquero';
-  import { generateFeltonLine } from '$lib/utils';
-  import type ColumnTable from 'arquero/dist/types/table/column-table';
-  import type { FeltonData } from '$lib/types';
-  import { convertToDate } from '$lib/utils';
+  import * as d3 from "d3";
+  import * as aq from "arquero";
+  import { generateFeltonLine } from "$lib/utils";
+  import type ColumnTable from "arquero/dist/types/table/column-table";
+  import type { FeltonData } from "$lib/types";
+  import { convertToDate } from "$lib/utils";
 
   export let width: number;
   // TODO: What's the right ratio for this component?
@@ -29,9 +29,9 @@
 
   // get the count for every week
   const weeklyTotals = data
-    .groupby('week')
+    .groupby("week")
     .rollup({ total: (d) => aq.op.sum(d!.count) }) // eslint-disable-line @typescript-eslint/no-non-null-assertion
-    .orderby('week')
+    .orderby("week")
     .objects() as FeltonData[];
 
   const augmentedWeeklyTotals: FeltonData[] = [
@@ -66,7 +66,7 @@
   $: yLine = d3.line()(feltonData);
   // use d3.bisect to find the location closest to the start of the month?
 
-  const formatDate = d3.timeFormat('%b');
+  const formatDate = d3.timeFormat("%b");
 
   // generate a collection of days in the middle of each month
   $: months = d3.timeMonth.range(
@@ -84,7 +84,7 @@
     .tickFormat((d) => formatDate(d as Date))
     .tickValues(midMonths);
 
-  $: d3.select(xAxis).call(xAxisGenerator).select('.domain').remove();
+  $: d3.select(xAxis).call(xAxisGenerator).select(".domain").remove();
 
   const dateFinder = d3.bisector(xAccessor);
   $: findHeightAtDate = (data: FeltonData[], date: Date) => {

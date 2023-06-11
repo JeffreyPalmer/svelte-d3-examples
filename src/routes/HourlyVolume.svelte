@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as d3 from 'd3';
-  import type { ParsedGHData } from '$lib/types';
+  import * as d3 from "d3";
+  import type { ParsedGHData } from "$lib/types";
 
   export let title: string;
   export let width: number;

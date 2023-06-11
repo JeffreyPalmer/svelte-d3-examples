@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as d3 from 'd3';
-  import * as R from 'ramda';
+  import * as d3 from "d3";
+  import * as R from "ramda";
 
   type Data = {
     month: string;
@@ -9,52 +9,52 @@
 
   export let data: Data[] = [
     {
-      month: '2020-01-01',
+      month: "2020-01-01",
       total: 236
     },
     {
-      month: '2020-02-01',
+      month: "2020-02-01",
       total: 378
     },
     {
-      month: '2020-03-01',
+      month: "2020-03-01",
       total: 282
     },
     {
-      month: '2020-04-01',
+      month: "2020-04-01",
       total: 403
     },
     {
-      month: '2020-05-01',
+      month: "2020-05-01",
       total: 359
     },
     {
-      month: '2020-06-01',
+      month: "2020-06-01",
       total: 379
     },
     {
-      month: '2020-07-01',
+      month: "2020-07-01",
       // total: 1200,
       total: 654
     },
     {
-      month: '2020-08-01',
+      month: "2020-08-01",
       total: 305
     },
     {
-      month: '2020-09-01',
+      month: "2020-09-01",
       total: 290
     },
     {
-      month: '2020-10-01',
+      month: "2020-10-01",
       total: 313
     },
     {
-      month: '2020-11-01',
+      month: "2020-11-01",
       total: 402
     },
     {
-      month: '2020-12-01',
+      month: "2020-12-01",
       total: 286
     }
   ];
@@ -63,15 +63,15 @@
   // Copy the final entry in the array
   const myClonedData = R.clone(data[11]);
   // Now set the date to one month after
-  myClonedData.month = '2021-01-01';
+  myClonedData.month = "2021-01-01";
   const augmentedData = [...R.clone(data), myClonedData];
 
   export let width = 1200;
   export let height = 800;
 
   const textHeight = 30;
-  const highlightColor = 'cornflowerblue';
-  const normalColor = '#ccc';
+  const highlightColor = "cornflowerblue";
+  const normalColor = "#ccc";
 
   let margins = {
     top: 50,
@@ -86,9 +86,9 @@
 
   const labelYOffset = 15;
 
-  const formatter = d3.format('.0f');
+  const formatter = d3.format(".0f");
 
-  const dateParser = d3.timeParse('%Y-%m-%d');
+  const dateParser = d3.timeParse("%Y-%m-%d");
 
   const xAccessor = (d: Data): Date => dateParser(d.month) as Date;
   const yAccessor = (d: Data): number => d.total;
@@ -101,8 +101,8 @@
   $: xScale = d3
     .scaleTime()
     .domain([
-      dateParser('2020-01-01') as Date,
-      dateParser('2021-01-01') as Date
+      dateParser("2020-01-01") as Date,
+      dateParser("2021-01-01") as Date
     ])
     .range([margins.left, width - margins.right]);
 
@@ -118,9 +118,9 @@
 
   const formatDate = (date: Date | d3.NumberValue | string): string => {
     const options: Intl.DateTimeFormatOptions = {
-      month: 'short'
+      month: "short"
     };
-    return date.toLocaleString('en-us', options);
+    return date.toLocaleString("en-us", options);
   };
 
   function generateFeltonLine(
@@ -186,7 +186,7 @@
 
     d3.select<SVGGElement, undefined>(xAxis)
       .call(xAxisGenerator)
-      .select('.domain')
+      .select(".domain")
       .remove();
   }
 </script>

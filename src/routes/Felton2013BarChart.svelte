@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as d3 from 'd3';
-  import * as R from 'ramda';
+  import * as d3 from "d3";
+  import * as R from "ramda";
 
   interface Data {
     name: string;
@@ -9,43 +9,43 @@
 
   export let data: Data[] = [
     {
-      name: 'Sommer Wolfe',
+      name: "Sommer Wolfe",
       total_actions: 337
     },
     {
-      name: 'Elias Vančo',
+      name: "Elias Vančo",
       total_actions: 260
     },
     {
-      name: 'Milka Winfield',
+      name: "Milka Winfield",
       total_actions: 236
     },
     {
-      name: 'Fritz Nadya',
+      name: "Fritz Nadya",
       total_actions: 188
     },
     {
-      name: 'Ellie-Louise Schofield',
+      name: "Ellie-Louise Schofield",
       total_actions: 186
     },
     {
-      name: 'Ana Byrne',
+      name: "Ana Byrne",
       total_actions: 152
     },
     {
-      name: 'Lana Bolton',
+      name: "Lana Bolton",
       total_actions: 274
     },
     {
-      name: 'Lili Broadhurst',
+      name: "Lili Broadhurst",
       total_actions: 84
     },
     {
-      name: 'Judy Sheldon',
+      name: "Judy Sheldon",
       total_actions: 138
     },
     {
-      name: 'Ricardo Price',
+      name: "Ricardo Price",
       total_actions: 281
     }
   ];
@@ -69,7 +69,7 @@
   // Compute the overall height of the visual
   const height = topN * lineHeight + margins.top + margins.bottom;
 
-  const highlightColor = 'cornflowerblue';
+  const highlightColor = "cornflowerblue";
 
   const metricAccessor = (d: Data) => d.total_actions;
   const titleAccessor = (d: Data) => d.name;
