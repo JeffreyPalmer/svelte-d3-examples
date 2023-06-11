@@ -45,13 +45,13 @@
 		// arquero with ! and as, since the library does not
 		// appear to support TS
 		pullReqs = res
-			.filter((d) => d && d.event === 'pull_requests') // eslint-disable-line @typescript-eslint/no-non-null-assertion
+			.filter((d) => d!.event === 'pull_requests') // eslint-disable-line @typescript-eslint/no-non-null-assertion
 			.objects() as ParsedGHData[];
 		issues = res
-			.filter((d) => d && d.event === 'issues') // eslint-disable-line @typescript-eslint/no-non-null-assertion
+			.filter((d) => d!.event === 'issues') // eslint-disable-line @typescript-eslint/no-non-null-assertion
 			.objects() as ParsedGHData[];
 		branches = res
-			.filter((d) => d && d.event === 'branches') // eslint-disable-line @typescript-eslint/no-non-null-assertion
+			.filter((d) => d!.event === 'branches') // eslint-disable-line @typescript-eslint/no-non-null-assertion
 			.objects() as ParsedGHData[];
 		data = res;
 		loaded = true;
