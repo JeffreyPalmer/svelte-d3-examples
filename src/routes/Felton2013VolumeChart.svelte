@@ -35,24 +35,25 @@
 	}
 
 	let loaded = false;
-	let pullReqs: ParsedGHData[] = [];
-	let issues: ParsedGHData[] = [];
-	let branches: ParsedGHData[] = [];
+	let pullReqs: ParsedGHData[];
+	let issues: ParsedGHData[];
+	let branches: ParsedGHData[];
 	let data: ColumnTable;
 
 	loadData().then((res: ColumnTable) => {
-		// resorting to ! as any undefined checks breaks arquero
-		// it's fine in this case but should be avoided
+		// Forcing typescript to recognise the output of
+		// arquero with ! and as, since the library does not
+		// appear to support TS
 		pullReqs = res
-			.filter((d) => d!.event === 'pull_requests')
+			.filter((d) => d && d.event === 'pull_requests') // eslint-disable-line @typescript-eslint/no-non-null-assertion
 			.objects() as ParsedGHData[];
 		issues = res
-			.filter((d) => d!.event === 'issues')
+			.filter((d) => d && d.event === 'issues') // eslint-disable-line @typescript-eslint/no-non-null-assertion
 			.objects() as ParsedGHData[];
 		branches = res
-			.filter((d) => d!.event === 'branches')
+			.filter((d) => d && d.event === 'branches') // eslint-disable-line @typescript-eslint/no-non-null-assertion
 			.objects() as ParsedGHData[];
-		data = res as ColumnTable;
+		data = res;
 		loaded = true;
 	});
 </script>

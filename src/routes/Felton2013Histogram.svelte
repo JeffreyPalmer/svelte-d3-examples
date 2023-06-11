@@ -183,7 +183,8 @@
 			.tickFormat((v) => formatDate(v))
 			.tickValues(R.map(xAccessor, data));
 		// Now remove the axis line
-		d3.select<SVGGElement, {}>(xAxis)
+
+		d3.select<SVGGElement, undefined>(xAxis)
 			.call(xAxisGenerator)
 			.select('.domain')
 			.remove();

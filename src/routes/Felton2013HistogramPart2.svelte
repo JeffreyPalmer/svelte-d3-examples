@@ -227,6 +227,7 @@
 		(height - margins.top - margins.bottom) / 2,
 		10
 	);
+
 	$: closedPoly = generateClosedFeltonPolygon(
 		augmentedData,
 		xScale,

@@ -4,6 +4,7 @@
 	import { generateFeltonLine } from '$lib/utils';
 	import type ColumnTable from 'arquero/dist/types/table/column-table';
 	import type { FeltonData } from '$lib/types';
+	import { isNumber, convertToDate } from '$lib/utils';
 
 	export let width: number;
 	// TODO: What's the right ratio for this component?
@@ -18,16 +19,18 @@
 	// given an array of weekly total elements, create a new entry
 	// that has the same value as the existing last entry but is
 	// one week in the future
-	function createNewLastElement(data: WeekAndTotal[]) {
+	function createNewLastElement(data: FeltonData[]) {
 		const newElement = { ...data[data.length - 1] };
-		newElement.week = d3.timeWeek.offset(newElement.week, 1);
+		if (newElement.week instanceof Date) {
+			newElement.week = d3.timeWeek.offset(newElement.week, 1);
+		}
 		return newElement;
 	}
 
 	// get the count for every week
 	const weeklyTotals = data
 		.groupby('week')
-		.rollup({ total: (d) => aq.op.sum(d!.count) })
+		.rollup({ total: (d) => aq.op.sum(d!.count) }) // eslint-disable-line @typescript-eslint/no-non-null-assertion
 		.orderby('week')
 		.objects() as FeltonData[];
 
@@ -36,22 +39,24 @@
 		createNewLastElement(weeklyTotals)
 	];
 
-	const xAccessor = (d: FeltonData): string =>
-		typeof d.week === 'string' ? d.week : String(d.week);
+	const xAccessor = (d: FeltonData): Date => convertToDate(d.week);
+
 	const yAccessor = (d: FeltonData): number =>
-		typeof d.total === 'number' ? d.number : Number(d.number);
+		isNumber(d.total) ? Number(d.total) : 0;
 
-	const xs = augmentedWeeklyTotals.map(xAccessor) as Date[];
-	const ys = augmentedWeeklyTotals.map(yAccessor) as number[];
+	const xs: Date[] = augmentedWeeklyTotals.map(xAccessor);
+	const ys: number[] = augmentedWeeklyTotals.map(yAccessor);
 
-	const xScale = d3
-		.scaleTime()
-		.domain(d3.extent(xs) as [Date, Date])
-		.range([0, width]);
+	const xExtents = [xs[0], xs[xs.length - 1]];
+	const xDomain = xExtents.map((d) => new Date(d));
+
+	const xScale = d3.scaleTime().domain(xDomain).range([0, width]);
+
+	const yDomain = [0, Math.max(...ys)];
 
 	const yScale = d3
 		.scaleLinear()
-		.domain([0, d3.max(ys) as number])
+		.domain(yDomain)
 		.range([height, topPadding])
 		.nice();
 
@@ -69,10 +74,8 @@
 	const formatDate = d3.timeFormat('%b');
 
 	// generate a collection of days in the middle of each month
-	$: months = d3.timeMonth.range(
-		weeklyTotals[0].week,
-		weeklyTotals[weeklyTotals.length - 1].week
-	);
+	$: months = d3.timeMonth.range(xExtents[0], xExtents[1]);
+
 	$: midMonths = months.map((d) => d3.timeDay.offset(d, 15));
 
 	let xAxis: SVGGElement;
