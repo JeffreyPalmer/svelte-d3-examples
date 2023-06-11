@@ -1,27 +1,27 @@
 <script lang="ts">
-  import * as d3 from "d3"
+  import * as d3 from "d3";
 
-  export let width = 1200
-  export let height = 800
+  export let width = 1200;
+  export let height = 800;
 
-  let textHeight = 30
-  let highlightColor = "cornflowerblue"
+  let textHeight = 30;
+  let highlightColor = "cornflowerblue";
 
   let margins = {
     top: 80,
     bottom: 80,
     left: 80,
     right: 80
-  }
+  };
 
   $: xScale = d3
     .scaleLinear()
     .domain([0, 100])
-    .range([margins.left, width - margins.right])
+    .range([margins.left, width - margins.right]);
   $: yScale = d3
     .scaleLinear()
     .domain([0, 100])
-    .range([height - margins.bottom, margins.top])
+    .range([height - margins.bottom, margins.top]);
 </script>
 
 <p class="text-center text-lg text-gray-700 bg-white">D3 Base Component</p>

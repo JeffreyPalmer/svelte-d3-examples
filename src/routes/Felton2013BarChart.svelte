@@ -1,10 +1,10 @@
 <script lang="ts">
-  import * as d3 from "d3"
-  import * as R from "ramda"
+  import * as d3 from "d3";
+  import * as R from "ramda";
 
   interface Data {
-    name: string
-    total_actions: number
+    name: string;
+    total_actions: number;
   }
 
   export let data: Data[] = [
@@ -48,46 +48,46 @@
       name: "Ricardo Price",
       total_actions: 281
     }
-  ]
+  ];
 
-  const width = 1200
+  const width = 1200;
 
   const margins = {
     top: 50,
     bottom: 50,
     left: 50,
     right: 50
-  }
+  };
 
-  const topN = 10
+  const topN = 10;
 
-  const textHeight = 30
-  const barOffset = 15
-  const linePadding = 40
-  const lineHeight = textHeight + linePadding
+  const textHeight = 30;
+  const barOffset = 15;
+  const linePadding = 40;
+  const lineHeight = textHeight + linePadding;
 
   // Compute the overall height of the visual
-  const height = topN * lineHeight + margins.top + margins.bottom
+  const height = topN * lineHeight + margins.top + margins.bottom;
 
-  const highlightColor = "cornflowerblue"
+  const highlightColor = "cornflowerblue";
 
-  const metricAccessor = (d: Data) => d.total_actions
-  const titleAccessor = (d: Data) => d.name
+  const metricAccessor = (d: Data) => d.total_actions;
+  const titleAccessor = (d: Data) => d.name;
 
   // Grab the maximum value from the data for later use
-  const xMax = d3.max(data, metricAccessor)
+  const xMax = d3.max(data, metricAccessor);
   const xScale = d3
     .scaleLinear()
     .domain([0, xMax ? xMax : 0])
-    .range([margins.left, width - margins.right])
+    .range([margins.left, width - margins.right]);
 
   // Calculate the index-based offset from the top of the SVG
   // Note: Add textHeight to shift text below the starting point
   //       as text is placed according the the baseline
-  const yOffsetFn = (i: number) => lineHeight * i + margins.top + textHeight
+  const yOffsetFn = (i: number) => lineHeight * i + margins.top + textHeight;
 
-  const diff = (a: Data, b: Data) => metricAccessor(b) - metricAccessor(a)
-  const topParticipants = R.take(topN, R.sort(diff, data))
+  const diff = (a: Data, b: Data) => metricAccessor(b) - metricAccessor(a);
+  const topParticipants = R.take(topN, R.sort(diff, data));
 </script>
 
 <p class="text-center text-lg text-gray-700 bg-white">Felton 2013 Bar Chart</p>

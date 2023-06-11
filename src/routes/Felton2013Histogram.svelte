@@ -1,11 +1,11 @@
 <script lang="ts">
-  import * as d3 from "d3"
-  import * as R from "ramda"
+  import * as d3 from "d3";
+  import * as R from "ramda";
 
   type Data = {
-    month: string
-    total: number
-  }
+    month: string;
+    total: number;
+  };
 
   export let data: Data[] = [
     {
@@ -57,45 +57,45 @@
       month: "2020-12-01",
       total: 286
     }
-  ]
+  ];
 
   // Massage the data so that there are enough points to complete the path
   // Copy the final entry in the array
-  const myClonedData = R.clone(data[11])
+  const myClonedData = R.clone(data[11]);
   // Now set the date to one month after
-  myClonedData.month = "2021-01-01"
-  const augmentedData = [...R.clone(data), myClonedData]
+  myClonedData.month = "2021-01-01";
+  const augmentedData = [...R.clone(data), myClonedData];
 
-  export let width = 1200
-  export let height = 800
+  export let width = 1200;
+  export let height = 800;
 
-  const textHeight = 30
-  const highlightColor = "cornflowerblue"
-  const normalColor = "#ccc"
+  const textHeight = 30;
+  const highlightColor = "cornflowerblue";
+  const normalColor = "#ccc";
 
   let margins = {
     top: 50,
     bottom: 50,
     left: 50,
     right: 50
-  }
+  };
   // We know we're showing 12 months so divide into 24 intervals
   // TODO: generalize
-  $: labelXOffset = (width - margins.left - margins.right) / 24
+  $: labelXOffset = (width - margins.left - margins.right) / 24;
   // $: console.log("X-OFFSET", labelXOffset);
 
-  const labelYOffset = 15
+  const labelYOffset = 15;
 
-  const formatter = d3.format(".0f")
+  const formatter = d3.format(".0f");
 
-  const dateParser = d3.timeParse("%Y-%m-%d")
+  const dateParser = d3.timeParse("%Y-%m-%d");
 
-  const xAccessor = (d: Data): Date => dateParser(d.month) as Date
-  const yAccessor = (d: Data): number => d.total
+  const xAccessor = (d: Data): Date => dateParser(d.month) as Date;
+  const yAccessor = (d: Data): number => d.total;
 
   // How to calculate the scale factor which will get us the most-significant digit
-  $: yMin = d3.min(data, yAccessor)
-  $: scale = Math.pow(10, Math.floor(Math.log10(yMin ? yMin : 0)))
+  $: yMin = d3.min(data, yAccessor);
+  $: scale = Math.pow(10, Math.floor(Math.log10(yMin ? yMin : 0)));
   // $: console.log("SCALE", scale);
 
   $: xScale = d3
@@ -104,7 +104,7 @@
       dateParser("2020-01-01") as Date,
       dateParser("2021-01-01") as Date
     ])
-    .range([margins.left, width - margins.right])
+    .range([margins.left, width - margins.right]);
 
   // Mention that you need to reverse the top and bottom in the range
   $: yScale = d3
@@ -114,14 +114,14 @@
       Math.max(...data.map(yAccessor)) + Math.max(...data.map(yAccessor)) / 10
     ])
     .range([height - margins.bottom, margins.top])
-    .nice()
+    .nice();
 
   const formatDate = (date: Date | d3.NumberValue | string): string => {
     const options: Intl.DateTimeFormatOptions = {
       month: "short"
-    }
-    return date.toLocaleString("en-us", options)
-  }
+    };
+    return date.toLocaleString("en-us", options);
+  };
 
   function generateFeltonLine(
     data: Data[],
@@ -132,28 +132,29 @@
   ): [number, number][] {
     // this is only correct because of 0-based arrays and # segments = # points - 1
     /* const segments = data.length; */
-    const segmentWidth = xScale(xAccessor(data[1])) - xScale(xAccessor(data[0]))
-    const connectorWidth = segmentWidth * 0.05 // 5% on each side
+    const segmentWidth =
+      xScale(xAccessor(data[1])) - xScale(xAccessor(data[0]));
+    const connectorWidth = segmentWidth * 0.05; // 5% on each side
 
     // start with the first point, as it (and the last point) are special cases
-    let result = [[xScale(xAccessor(data[0])), yScale(yAccessor(data[0]))]]
+    let result = [[xScale(xAccessor(data[0])), yScale(yAccessor(data[0]))]];
     // TODO: Add a bounds check here
     for (let i = 1; i < data.length - 1; i++) {
       result.push([
         xScale(xAccessor(data[i])) - connectorWidth,
         yScale(yAccessor(data[i - 1]))
-      ])
+      ]);
       result.push([
         xScale(xAccessor(data[i])) + connectorWidth,
         yScale(yAccessor(data[i]))
-      ])
+      ]);
     }
     // Add the final point
     result.push([
       xScale(xAccessor(data[data.length - 1])),
       yScale(yAccessor(data[data.length - 1]))
-    ])
-    return result as [number, number][]
+    ]);
+    return result as [number, number][];
   }
 
   // First attempt - using 'curveStepAfter'
@@ -166,11 +167,11 @@
   // Second attempt - Felton-style connectors
   $: yLine = d3.line()(
     generateFeltonLine(augmentedData, xScale, xAccessor, yScale, yAccessor)
-  )
+  );
   // $: console.log("FELTON LINE:", yLine);
 
   // For binding in the markup below
-  let xAxis: SVGGElement
+  let xAxis: SVGGElement;
 
   // Now we need some hackery to get around the extra element that was added at the end
   // Explicitly use the dates from the original data
@@ -180,13 +181,13 @@
       .tickSize(0)
       .scale(xScale)
       .tickFormat((v) => formatDate(v))
-      .tickValues(R.map(xAccessor, data))
+      .tickValues(R.map(xAccessor, data));
     // Now remove the axis line
 
     d3.select<SVGGElement, undefined>(xAxis)
       .call(xAxisGenerator)
       .select(".domain")
-      .remove()
+      .remove();
   }
 </script>
 

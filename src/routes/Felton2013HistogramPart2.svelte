@@ -1,13 +1,13 @@
 <script lang="ts">
-  import * as d3 from "d3"
-  import * as R from "ramda"
+  import * as d3 from "d3";
+  import * as R from "ramda";
   import {
     poissonDiscSampler,
     generateFeltonLine,
     generateClosedFeltonPolygon
-  } from "$lib/utils"
+  } from "$lib/utils";
 
-  import type { FeltonData } from "$lib/types"
+  import type { FeltonData } from "$lib/types";
 
   export let data: Data[] = [
     {
@@ -71,54 +71,54 @@
       top_total: 286,
       bottom_total: 125
     }
-  ]
+  ];
 
   type Data = {
-    month: string
-    top_total: number
-    bottom_total: number
-  }
+    month: string;
+    top_total: number;
+    bottom_total: number;
+  };
 
   // Massage the data so that there are enough points to complete the path
   // Copy the final entry in the array
-  const myClonedData = R.clone(data[11])
+  const myClonedData = R.clone(data[11]);
   // Now set the date to one month after
-  myClonedData.month = "2021-01-01"
-  const augmentedData = [...R.clone(data), myClonedData]
+  myClonedData.month = "2021-01-01";
+  const augmentedData = [...R.clone(data), myClonedData];
 
-  export let width = 1200
-  export let height = 800
+  export let width = 1200;
+  export let height = 800;
 
-  const textHeight = 30
-  const highlightColor = "cornflowerblue"
-  const normalColor = "#ccc"
+  const textHeight = 30;
+  const highlightColor = "cornflowerblue";
+  const normalColor = "#ccc";
 
   const margins = {
     top: 50,
     bottom: 50,
     left: 50,
     right: 50
-  }
+  };
   // We know we're showing 12 months so divide into 24 intevals
   // TODO: generalize
-  $: labelXOffset = (width - margins.left - margins.right) / 24
+  $: labelXOffset = (width - margins.left - margins.right) / 24;
   // $: console.log('X-OFFSET', labelXOffset);
 
   /* const labelYOffset = 15; */
 
   /* const formatter = d3.format(".0f"); */
-  const dateParser = d3.timeParse("%Y-%m-%d")
+  const dateParser = d3.timeParse("%Y-%m-%d");
   const xAccessor = (d: FeltonData): Date => {
     if (typeof d.month === "string") {
-      return dateParser(d.month) as Date
+      return dateParser(d.month) as Date;
     }
     if (typeof d.month === "number") {
-      return new Date(d.month)
+      return new Date(d.month);
     }
-    return d.month
-  }
-  const topAccessor = (d: FeltonData): number => Number(d.top_total)
-  const bottomAccessor = (d: FeltonData): number => Number(d.bottom_total)
+    return d.month;
+  };
+  const topAccessor = (d: FeltonData): number => Number(d.top_total);
+  const bottomAccessor = (d: FeltonData): number => Number(d.bottom_total);
 
   const xScale = d3
     .scaleTime()
@@ -126,7 +126,7 @@
       dateParser("2020-01-01") as Date,
       dateParser("2021-01-01") as Date
     ])
-    .range([margins.left, width - margins.right])
+    .range([margins.left, width - margins.right]);
 
   // The top scale goes from midpoint to top margin
   // Add 10% of the max top value to the end of the domain
@@ -138,7 +138,7 @@
       (height - margins.bottom - margins.top) / 2 + margins.top,
       margins.top
     ])
-    .nice()
+    .nice();
 
   // The bottom scale goes from midpoint to bottom margin
   // Add 10% of the max bottom value to the end of the domain
@@ -150,14 +150,14 @@
       (height - margins.bottom - margins.top) / 2 + margins.top,
       height - margins.bottom
     ])
-    .nice()
+    .nice();
 
   const formatDate = (date: Date): string => {
     let options: Intl.DateTimeFormatOptions = {
       month: "short"
-    }
-    return date.toLocaleString("en-us", options)
-  }
+    };
+    return date.toLocaleString("en-us", options);
+  };
 
   // First attempt - using 'curveStepAfter'
   // $: yLine = d3
@@ -173,7 +173,7 @@
     xAccessor,
     topScale,
     topAccessor
-  )
+  );
 
   const botFeltonData = generateFeltonLine(
     augmentedData,
@@ -181,12 +181,12 @@
     xAccessor,
     bottomScale,
     bottomAccessor
-  )
-  $: topLine = d3.line()(topFeltonData)
-  $: bottomLine = d3.line()(botFeltonData)
+  );
+  $: topLine = d3.line()(topFeltonData);
+  $: bottomLine = d3.line()(botFeltonData);
 
   // For binding in the markup below
-  let xAxis: SVGGElement
+  let xAxis: SVGGElement;
 
   // Now we need some hackery to get around the extra element that was added at the end
   // Explicitly use the dates from the original data
@@ -196,11 +196,11 @@
       .tickSize(0)
       .scale(xScale)
       .tickFormat(function (v) {
-        return formatDate(v as Date)
+        return formatDate(v as Date);
       })
-      .tickValues(R.map(xAccessor, data))
+      .tickValues(R.map(xAccessor, data));
     // Now remove the axis line
-    d3.select(xAxis).call(xAxisGenerator).select(".domain").remove()
+    d3.select(xAxis).call(xAxisGenerator).select(".domain").remove();
   }
 
   // Use the generator to generate all of the points
@@ -210,14 +210,14 @@
     height: number,
     radius: number
   ) {
-    const sampler = poissonDiscSampler(width, height, radius)
-    let points = []
-    let a: [number, number] | undefined = sampler()
+    const sampler = poissonDiscSampler(width, height, radius);
+    let points = [];
+    let a: [number, number] | undefined = sampler();
     while (a) {
-      points.push(a)
-      a = sampler()
+      points.push(a);
+      a = sampler();
     }
-    return points
+    return points;
   }
 
   // generate points covering the entire bottom of the SVG
@@ -226,7 +226,7 @@
     width,
     (height - margins.top - margins.bottom) / 2,
     10
-  )
+  );
 
   $: closedPoly = generateClosedFeltonPolygon(
     augmentedData,
@@ -234,7 +234,7 @@
     xAccessor,
     bottomScale,
     bottomAccessor
-  )
+  );
 </script>
 
 <p class="text-center text-lg text-gray-700 bg-white">
