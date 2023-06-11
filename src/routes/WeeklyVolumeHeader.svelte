@@ -4,7 +4,7 @@
 	import { generateFeltonLine } from '$lib/utils';
 	import type ColumnTable from 'arquero/dist/types/table/column-table';
 	import type { FeltonData } from '$lib/types';
-	import { isNumber, convertToDate } from '$lib/utils';
+	import { convertToDate } from '$lib/utils';
 
 	export let width: number;
 	// TODO: What's the right ratio for this component?
@@ -40,27 +40,22 @@
 	];
 
 	const xAccessor = (d: FeltonData): Date => convertToDate(d.week);
+	const yAccessor = (d: FeltonData): number => Number(d.total);
 
-	const yAccessor = (d: FeltonData): number =>
-		isNumber(d.total) ? Number(d.total) : 0;
+	const xScale = d3
+		.scaleTime()
+		.domain(d3.extent(augmentedWeeklyTotals, xAccessor).map((v) => v ?? 0))
+		.range([0, width]);
 
-	const xs: Date[] = augmentedWeeklyTotals.map(xAccessor);
-	const ys: number[] = augmentedWeeklyTotals.map(yAccessor);
-
-	const xExtents = [xs[0], xs[xs.length - 1]];
-	const xDomain = xExtents.map((d) => new Date(d));
-
-	const xScale = d3.scaleTime().domain(xDomain).range([0, width]);
-
-	const yDomain = [0, Math.max(...ys)];
-
-	const yScale = d3
+	$: yScale = d3
 		.scaleLinear()
-		.domain(yDomain)
+		.domain(
+			d3.extent(augmentedWeeklyTotals, yAccessor).map((value) => value ?? 0)
+		)
 		.range([height, topPadding])
 		.nice();
 
-	const feltonData = generateFeltonLine(
+	$: feltonData = generateFeltonLine(
 		augmentedWeeklyTotals,
 		xScale,
 		xAccessor,
@@ -74,24 +69,25 @@
 	const formatDate = d3.timeFormat('%b');
 
 	// generate a collection of days in the middle of each month
-	$: months = d3.timeMonth.range(xExtents[0], xExtents[1]);
+	$: months = d3.timeMonth.range(
+		xAccessor(augmentedWeeklyTotals[0]),
+		xAccessor(augmentedWeeklyTotals[augmentedWeeklyTotals.length - 1])
+	);
 
 	$: midMonths = months.map((d) => d3.timeDay.offset(d, 15));
 
 	let xAxis: SVGGElement;
-	$: {
-		const xAxisGenerator = d3
-			.axisBottom(xScale)
-			.tickSize(0)
-			.scale(xScale)
-			.tickFormat((d) => formatDate(d as Date))
-			.tickValues(midMonths);
+	const xAxisGenerator = d3
+		.axisBottom(xScale)
+		.tickSize(0)
+		.scale(xScale)
+		.tickFormat((d) => formatDate(d as Date))
+		.tickValues(midMonths);
 
-		d3.select(xAxis).call(xAxisGenerator).select('.domain').remove();
-	}
+	$: d3.select(xAxis).call(xAxisGenerator).select('.domain').remove();
 
 	const dateFinder = d3.bisector(xAccessor);
-	const findHeightAtDate = (data: FeltonData[], date: Date) => {
+	$: findHeightAtDate = (data: FeltonData[], date: Date) => {
 		const index = dateFinder.left(data, date) - 1;
 
 		// if the current date is a sunday (the start of the week) we'll
